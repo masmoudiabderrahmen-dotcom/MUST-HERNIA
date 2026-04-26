@@ -3,92 +3,1593 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MUST-HERNIA ProCollect</title>
-<!-- Redirection automatique vers Apps Script -->
-<meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbyqLBAfcqkMhKFrjhBf5CJzCOtItsZdUf2_QWEjh7jPrOZuLxpQXDt4LMH219f2_qSz/exec">
+<title>MUST-HERNIA ProCollect – Plateforme prospective de recueil de données</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0f1f3d;
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
-  }
-  .card {
-    max-width: 340px;
-    width: 100%;
-  }
-  .logo { font-size: 52px; margin-bottom: 16px; }
-  h1 {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    margin-bottom: 4px;
-  }
-  h1 span { color: #6ee7b7; }
-  h1 em { color: #93c5fd; font-style: normal; }
-  .sub {
-    font-size: 12px;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 32px;
-  }
-  .spinner {
-    width: 40px; height: 40px;
-    border: 3px solid rgba(255,255,255,0.1);
-    border-top-color: #0d9488;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 20px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .msg { font-size: 14px; color: #94a3b8; margin-bottom: 24px; }
-  .btn {
-    display: inline-block;
-    background: #0d9488;
-    color: white;
-    padding: 14px 28px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 700;
-    width: 100%;
-  }
-  .pi {
-    margin-top: 28px;
-    font-size: 12px;
-    color: #475569;
-  }
+:root{
+  --primary:#1e3a5f;--primary-m:#2563eb;--primary-l:#dbeafe;--primary-xl:#eff6ff;
+  --teal:#0d9488;--teal-l:#ccfbf1;
+  --amber:#d97706;--amber-l:#fef3c7;
+  --red:#dc2626;--red-l:#fee2e2;
+  --green:#15803d;--green-l:#dcfce7;
+  --purple:#7c3aed;--purple-l:#ede9fe;
+  --cyan:#0891b2;--cyan-l:#cffafe;
+  --slate:#64748b;--border:#e2e8f0;--bg:#f1f5f9;--card:#fff;--text:#0f172a;--text-m:#475569;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+
+/* VIEWS */
+.view{display:none;min-height:100vh}.view.active{display:block}
+
+/* LOGIN */
+#v-login{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;position:relative;overflow:hidden;
+  background:#0a1628;
+}
+#v-login::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 50%, rgba(37,99,235,.22) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 20%, rgba(13,148,136,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 70% 85%, rgba(124,58,237,.12) 0%, transparent 50%);
+  pointer-events:none;
+}
+#v-login::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 41px),
+             repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 41px);
+  pointer-events:none;
+}
+.login-outer{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:460px}
+.login-brand{text-align:center;color:#fff}
+.login-brand-icon{font-size:50px;margin-bottom:12px;filter:drop-shadow(0 4px 12px rgba(110,231,183,.4))}
+.login-brand-name{font-family:'Sora',sans-serif;font-size:36px;font-weight:800;letter-spacing:.04em;color:#fff;line-height:1}
+.login-brand-name span{color:#6ee7b7}
+.login-brand-sub{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-top:4px}
+.login-brand-tagline{font-size:13px;color:rgba(255,255,255,.7);margin-top:6px;font-style:italic}
+
+.login-card{
+  background:rgba(255,255,255,.97);
+  border-radius:20px;padding:36px 32px;width:100%;
+  box-shadow:0 32px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08);
+}
+.login-pi-block{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,var(--primary-xl),#f0fdf4);
+  border:1.5px solid var(--primary-l);border-radius:12px;
+  padding:10px 14px;margin-bottom:18px;
+}
+.login-pi-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.login-pi-text{flex:1}
+.login-pi-text .pi-role{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate)}
+.login-pi-text .pi-name{font-size:14px;font-weight:700;color:var(--primary);margin-top:1px}
+.login-centre-badge{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text-m);
+  padding:6px 12px;background:var(--bg);border-radius:8px;
+  margin-bottom:20px;justify-content:center;
+}
+.login-centre-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.login-divider{
+  display:flex;align-items:center;gap:10px;margin:4px 0 18px;color:var(--text-m);font-size:11px;
+}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.login-err{
+  background:var(--red-l);color:var(--red);
+  padding:10px 14px;border-radius:8px;font-size:13px;
+  margin-bottom:14px;display:none;
+  border-left:3px solid var(--red);
+}
+.login-field label{font-size:11px;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px}
+.login-field input{
+  width:100%;height:50px;
+  padding:0 16px;border:2px solid var(--border);border-radius:10px;
+  font-size:20px;letter-spacing:.2em;text-align:center;
+  font-family:'DM Sans',sans-serif;color:var(--primary);
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  margin-bottom:14px;
+}
+.login-field input:focus{border-color:var(--primary-m);box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.login-btn{
+  width:100%;padding:14px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--primary) 0%,var(--primary-m) 100%);
+  color:#fff;font-size:15px;font-weight:700;font-family:'Sora',sans-serif;
+  cursor:pointer;letter-spacing:.02em;
+  transition:all .2s;box-shadow:0 4px 14px rgba(37,99,235,.35);
+}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.45)}
+.login-btn:active{transform:translateY(0)}
+.login-footer{color:rgba(255,255,255,.4);font-size:10px;text-align:center;letter-spacing:.04em}
+
+/* HEADER */
+.app-header{background:linear-gradient(135deg,#0a1628 0%,#1e3a5f 55%,#0d4a3a 100%);color:#fff;padding:12px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.app-header .logo{font-size:22px;flex-shrink:0}
+.app-header .htext .acr{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:#6ee7b7;letter-spacing:.03em}
+.app-header .htext .acr span{color:#93c5fd}
+.app-header .htext h1{font-size:12px;font-weight:600;opacity:.85;margin-top:1px}
+.app-header .htext p{font-size:10px;opacity:.6;margin-top:1px}
+.app-header .hright{margin-left:auto;display:flex;align-items:center;gap:8px}
+.app-header .user-badge{font-size:10px;background:rgba(255,255,255,.12);padding:3px 9px;border-radius:20px}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;padding:4px 11px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* PROGRESS */
+.prog-bar{flex:1;padding-left:16px}
+.prog-dots{display:flex;gap:4px;margin-bottom:6px}
+.prog-dot{height:4px;flex:1;border-radius:2px;background:rgba(255,255,255,.2);transition:background .3s}
+.prog-dot.done{background:#6ee7b7}.prog-dot.now{background:#fff}
+.prog-info{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.75)}
+
+/* WRAP */
+.wrap{max-width:860px;margin:0 auto;padding:16px 14px 90px}
+
+/* CARDS */
+.card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.sh-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.bg-b{background:#dbeafe}.bg-g{background:var(--green-l)}.bg-a{background:var(--amber-l)}.bg-r{background:var(--red-l)}.bg-p{background:var(--purple-l)}.bg-c{background:var(--cyan-l)}
+.sh h3{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--primary)}
+.badge{margin-left:auto;font-size:10px;padding:2px 8px;background:var(--primary-l);color:var(--primary);border-radius:20px;font-weight:700}
+
+/* GRID */
+.g{display:grid;gap:11px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g-auto{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.full{grid-column:1/-1}
+
+/* FORM */
+.f{display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:11px;font-weight:700;color:var(--text-m);letter-spacing:.03em;text-transform:uppercase}
+.lbl .r{color:var(--red)}
+input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{height:40px;padding:0 11px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:#fff;width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+textarea{height:68px;padding:9px 11px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--primary-m);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.tg{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.to{display:flex;align-items:center;gap:5px;padding:6px 11px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;transition:all .15s;background:#fff;user-select:none}
+.to input{display:none}
+.to:has(input:checked){background:var(--primary-l);border-color:var(--primary-m);color:var(--primary);font-weight:600}
+.to.warn:has(input:checked){background:var(--amber-l);border-color:var(--amber);color:var(--amber)}
+.to.dng:has(input:checked){background:var(--red-l);border-color:var(--red);color:var(--red)}
+.sep{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--slate);padding:4px 0 8px;margin-top:8px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.cond{display:none}.cond.on{display:flex;flex-direction:column;gap:4px}
+
+/* VAS SLIDER */
+.vas-wrap{margin-top:4px}
+.vas-row{display:flex;align-items:center;gap:8px}
+.vas-row input[type=range]{flex:1;height:6px;cursor:pointer;accent-color:var(--primary-m)}
+.vas-val{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--primary);min-width:24px;text-align:center}
+.vas-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--slate);margin-top:2px}
+
+/* EuraHS */
+.eurahs-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px}
+.eurahs-label{flex:1;font-size:12px;color:var(--text)}
+.eurahs-score{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--primary);min-width:20px;text-align:right}
+.eurahs-total{background:var(--primary);color:#fff;padding:10px 14px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.eurahs-total .et-val{font-family:'Sora',sans-serif;font-size:22px;font-weight:700}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.dash-card{background:#fff;border-radius:16px;border:2px solid var(--border);padding:26px 20px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.dash-card:hover{border-color:var(--primary-m);box-shadow:0 6px 20px rgba(37,99,235,.12);transform:translateY(-2px)}
+.dash-card .dc-icon{font-size:40px;margin-bottom:12px}
+.dash-card h2{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px}
+.dash-card p{font-size:12px;color:var(--text-m)}
+.dash-card.primary{border-color:var(--primary-m);background:var(--primary-xl)}
+.dash-search{margin-top:14px;background:#fff;border-radius:16px;border:1px solid var(--border);padding:18px}
+.dash-search h3{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px}
+.search-row{display:flex;gap:8px}
+.search-row input{flex:1;height:42px;padding:0 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif}
+.search-row input:focus{outline:none;border-color:var(--primary-m)}
+
+/* SEARCH RESULTS */
+.sr-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:6px;transition:all .15s;background:#fff}
+.sr-item:hover{border-color:var(--primary-m);background:var(--primary-xl)}
+.sr-id{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--primary);min-width:100px}
+.sr-name{font-size:13px;font-weight:600}.sr-meta{font-size:11px;color:var(--text-m);margin-top:1px}
+.sr-phases{display:flex;gap:3px;flex-wrap:wrap}
+.phase-pip{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700}
+.pip-done{background:var(--green-l);color:var(--green)}.pip-pend{background:var(--border);color:var(--slate)}
+
+/* PATIENT RECORD */
+.rec-header{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;border-radius:16px;padding:20px;margin-bottom:14px}
+.rec-id{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#6ee7b7}
+.rec-name{font-size:16px;font-weight:600;margin-top:4px}
+.rec-meta{font-size:12px;opacity:.7;margin-top:4px}
+.timeline{position:relative;padding-left:20px;border-left:2px dashed var(--border);margin:16px 0}
+.tl-phase{margin-bottom:16px;position:relative}
+.tl-phase::before{content:'';position:absolute;left:-25px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid var(--border)}
+.tl-phase.done::before{background:var(--green);border-color:var(--green)}
+.tl-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.tl-title{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--primary)}
+.tl-date{font-size:11px;color:var(--text-m)}
+.tl-status{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
+.st-done{background:var(--green-l);color:var(--green)}.st-none{background:var(--border);color:var(--slate)}
+.tl-summary{font-size:12px;color:var(--text-m);background:var(--bg);padding:8px 10px;border-radius:8px}
+
+/* SUCCESS */
+.id-hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);border-radius:20px;padding:32px 24px;text-align:center;color:#fff;margin-bottom:16px}
+.id-label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-bottom:8px}
+.id-value{font-family:'Sora',sans-serif;font-size:48px;font-weight:800;letter-spacing:.05em;color:#6ee7b7;margin-bottom:4px}
+.id-sub{font-size:12px;opacity:.6;margin-bottom:20px}
+.id-actions{display:flex;justify-content:center;gap:8px}
+.id-note{background:rgba(255,255,255,.1);border-radius:10px;padding:12px 16px;font-size:12px;text-align:left;margin-top:14px}
+.id-note strong{display:block;margin-bottom:4px;color:#6ee7b7}
+.print-card{background:#fffbeb;border:2px dashed #fcd34d;border-radius:12px;padding:16px;text-align:center;margin-top:14px}
+.print-id{font-family:'Sora',sans-serif;font-size:36px;font-weight:800;color:var(--primary);letter-spacing:.08em}
+
+/* FOLLOW-UP BUTTONS */
+.fu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin:14px 0}
+.fu-btn{padding:14px 10px;border-radius:12px;border:2px solid;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .2s}
+.fu-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
+.fu-m1{background:var(--cyan-l);border-color:#67e8f9;color:var(--cyan)}
+.fu-m3{background:var(--green-l);border-color:#86efac;color:var(--green)}
+.fu-m6{background:var(--amber-l);border-color:#fcd34d;color:var(--amber)}
+.fu-m12{background:var(--purple-l);border-color:#c4b5fd;color:var(--purple)}
+.fu-lt{background:var(--red-l);border-color:#fca5a5;color:var(--red)}
+.fu-btn.done{opacity:.7}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--border);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 -3px 10px rgba(0,0,0,.06)}
+.nav-info{font-size:12px;color:var(--text-m);font-weight:500}
+.nav-btns{display:flex;gap:7px}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn-ghost{background:#f1f5f9;color:var(--text-m)}.btn-ghost:hover{background:var(--border)}
+.btn-primary{background:var(--primary-m);color:#fff}.btn-primary:hover{background:var(--primary)}
+.btn-ok{background:var(--teal);color:#fff}.btn-ok:hover{background:#0f766e}
+.btn-sm{padding:7px 14px;font-size:12px}
+
+/* LOADING */
+#loading-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#loading-overlay.on{display:flex}
+.spin-box{background:#fff;border-radius:16px;padding:28px 36px;text-align:center}
+.spin{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary-m);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* AID MODAL */
+.aid-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.75);z-index:500;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)}
+.aid-overlay.on{display:flex}
+.aid-box{background:#fff;border-radius:20px;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.aid-head{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;border-radius:20px 20px 0 0;z-index:1}
+.aid-head h3{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--primary);flex:1}
+.aid-close{background:var(--bg);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--slate)}
+.aid-body{padding:18px 20px}
+.aid-btn{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:var(--primary-xl);border:1px solid var(--primary-l);border-radius:5px;font-size:10px;font-weight:700;color:var(--primary-m);cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:6px;vertical-align:middle}
+.aid-btn:hover{background:var(--primary-l)}
+.aid-table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0}
+.aid-table th{background:var(--primary);color:#fff;padding:8px 10px;font-weight:700;font-size:11px}
+.aid-table td{padding:8px 10px;border:1px solid var(--border)}
+.aid-table tr:nth-child(even) td{background:var(--bg)}
+.aid-tip{background:var(--primary-xl);border-left:3px solid var(--primary-m);border-radius:0 8px 8px 0;padding:10px 13px;font-size:12px;margin-top:12px;color:var(--primary)}
+.aid-zone{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.az{flex:1;min-width:80px;border-radius:10px;padding:10px 8px;text-align:center}
+.az .az-score{font-family:'Sora',sans-serif;font-size:22px;font-weight:800}
+.az .az-lbl{font-size:11px;font-weight:600;margin-top:3px}
+.az .az-desc{font-size:10px;margin-top:3px;opacity:.8}
+.ccs-dim{background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.ccs-dim h4{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px}
+.ccs-levels{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.ccs-lv{text-align:center;padding:6px 2px;border-radius:7px;border:1.5px solid var(--border)}
+.ccs-lv .cn{font-family:'Sora',sans-serif;font-size:16px;font-weight:800}
+.ccs-lv .cl{font-size:9px;margin-top:2px;line-height:1.2}
+.ehs-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:3px;margin:10px 0}
+.ehs-cell{padding:9px 8px;text-align:center;border-radius:6px;font-size:12px}
+.ehs-head{background:var(--primary);color:#fff;font-weight:700;font-size:11px}
+.ehs-row-head{background:var(--primary-l);color:var(--primary);font-weight:700}
+.ehs-m{background:#dbeafe}.ehs-l{background:#dcfce7}.ehs-f{background:#ede9fe}
+.ehs-code{font-family:'Sora',sans-serif;font-weight:800;font-size:16px;display:block}
+.ehs-size{font-size:10px;opacity:.7}
+
+/* CHECKBOXES */
+.chk-list{display:flex;flex-direction:column;gap:6px}
+.chk-item{display:flex;align-items:center;gap:8px;padding:8px 11px;background:var(--bg);border-radius:8px;cursor:pointer;font-size:13px;border:1.5px solid transparent;transition:all .15s}
+.chk-item:hover{border-color:var(--border);background:#fff}
+.chk-item input{accent-color:var(--primary-m);width:15px;height:15px;flex-shrink:0;cursor:pointer}
+.chk-item.dng input{accent-color:var(--red)}
+
+@media print{body *{display:none}.print-card,.print-card *{display:block!important}.print-id{font-size:48pt}}
+@media(max-width:540px){.dash-grid,.g2,.g3{grid-template-columns:1fr}.fu-grid{grid-template-columns:repeat(3,1fr)}.g-auto{grid-template-columns:1fr 1fr}}
 </style>
-<script>
-  // Force redirect in case meta refresh is blocked
-  window.onload = function() {
-    setTimeout(function() {
-      window.location.replace(
-        "https://script.google.com/macros/s/AKfycbyqLBAfcqkMhKFrjhBf5CJzCOtItsZdUf2_QWEjh7jPrOZuLxpQXDt4LMH219f2_qSz/exec"
-      );
-    }, 800);
-  };
-</script>
 </head>
 <body>
-<div class="card">
-  <div class="logo">🏥</div>
-  <h1><span>MUST</span><em>-HERNIA</em></h1>
-  <p class="sub">ProCollect</p>
-  <div class="spinner"></div>
-  <p class="msg">Ouverture de la plateforme…</p>
-  <a href="https://script.google.com/macros/s/AKfycbyqLBAfcqkMhKFrjhBf5CJzCOtItsZdUf2_QWEjh7jPrOZuLxpQXDt4LMH219f2_qSz/exec"
-     class="btn">
-    Accéder maintenant →
-  </a>
-  <p class="pi">Pr Mohamed Ben Amar · HMU Sfax</p>
+
+<!-- LOADING -->
+<div id="loading-overlay"><div class="spin-box"><div class="spin"></div><p id="loading-msg" style="font-size:13px;color:var(--text-m)">Chargement…</p></div></div>
+
+<!-- AID MODAL -->
+<div class="aid-overlay" id="aid-overlay" onclick="if(event.target===this)closeAid()">
+  <div class="aid-box">
+    <div class="aid-head"><span id="aid-icon" style="font-size:18px">📊</span><h3 id="aid-title">Aide</h3><div class="aid-close" onclick="closeAid()">✕</div></div>
+    <div class="aid-body" id="aid-body"></div>
+  </div>
 </div>
+
+<!-- ══ VUE 1 — LOGIN ══════════════════════════════════ -->
+<div id="v-login" class="view active">
+  <div class="login-outer">
+
+    <!-- Branding au-dessus de la carte -->
+    <div class="login-brand">
+      <div class="login-brand-icon">🏥</div>
+      <div class="login-brand-name">MUST<span>-HERNIA</span></div>
+      <div class="login-brand-sub">ProCollect</div>
+      <div class="login-brand-tagline">Plateforme prospective de recueil de données chirurgicales</div>
+    </div>
+
+    <!-- Carte de connexion -->
+    <div class="login-card">
+
+      <!-- Investigateur principal -->
+      <div class="login-pi-block">
+        <div class="login-pi-avatar">👨‍⚕️</div>
+        <div class="login-pi-text">
+          <div class="pi-role">Investigateur principal</div>
+          <div class="pi-name">Pr Mohamed Ben Amar</div>
+        </div>
+      </div>
+
+      <!-- Centre -->
+      <div class="login-centre-badge">
+        <div class="dot"></div>
+        <span>Hôpital Militaire Universitaire de Sfax</span>
+        <span style="opacity:.4">·</span>
+        <span>Étude multicentrique — Hernie inguinale</span>
+      </div>
+
+      <div class="login-divider">Accès sécurisé</div>
+
+      <!-- Erreur -->
+      <div id="login-err" class="login-err">
+        ⚠️ Code d'accès incorrect — veuillez réessayer.
+      </div>
+
+      <!-- Champ code -->
+      <div class="login-field">
+        <label>Code d'accès</label>
+        <input type="password" id="login-code"
+               placeholder="••••••••"
+               onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+
+      <button class="login-btn" onclick="doLogin()">
+        Accéder à la base de données &rarr;
+      </button>
+
+    </div>
+
+    <!-- Pied de page -->
+    <div class="login-footer">
+      Multicenter University Sfax–Tataouine Hernia Study &nbsp;·&nbsp;
+      Accès réservé au personnel médical autorisé
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ VUE 2 — DASHBOARD ══════════════════════════════ -->
+<div id="v-dash" class="view">
+  <div class="app-header">
+    <div class="logo">🏥</div>
+    <div class="htext">
+      <div class="acr">MUST<span>-HERNIA</span></div>
+      <h1>Étude Multicentrique — Hernie Inguinale</h1>
+      <p>Pr Mohamed Ben Amar · HMU Sfax</p>
+    </div>
+    <div class="hright">
+      <span class="user-badge" id="centre-badge">—</span>
+      <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="dash-grid">
+      <div class="dash-card primary" onclick="showView('v-new');initNewForm()">
+        <div class="dc-icon">➕</div>
+        <h2>Nouveau patient</h2>
+        <p>Créer un nouveau dossier chirurgical</p>
+      </div>
+      <div class="dash-card" onclick="showView('v-search')">
+        <div class="dc-icon">🔍</div>
+        <h2>Rechercher / Accéder</h2>
+        <p>Rechercher par ID, nom ou numéro de dossier</p>
+      </div>
+    </div>
+    <div class="dash-search">
+      <h3>🔑 Accès rapide par identifiant patient</h3>
+      <div class="search-row">
+        <input type="text" id="quick-id" placeholder="ex. HI-2025-001" maxlength="14" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')quickAccess()">
+        <button class="btn btn-primary" onclick="quickAccess()">Ouvrir &rarr;</button>
+      </div>
+      <p id="quick-err" style="font-size:12px;color:var(--red);margin-top:7px;display:none"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VUE 3 — NOUVEAU PATIENT ════════════════════════ -->
+<div id="v-new" class="view">
+  <div class="app-header">
+    <div class="logo">➕</div>
+    <div class="htext">
+      <div class="acr">MUST<span>-HERNIA</span></div>
+      <h1>Nouveau dossier patient</h1>
+      <p>Pr Mohamed Ben Amar · HMU Sfax</p>
+    </div>
+    <div class="prog-bar">
+      <div class="prog-dots" id="new-dots"></div>
+      <div class="prog-info"><span id="new-step-lbl">Étape 1/5</span><span id="new-step-title">Identification</span></div>
+    </div>
+  </div>
+  <div class="wrap" id="new-form-wrap"></div>
+  <div class="nav">
+    <div class="nav-info" id="new-nav-info">Étape 1 / 5</div>
+    <div class="nav-btns">
+      <button class="btn btn-ghost" id="btn-new-prev" onclick="newPrev()">← Retour</button>
+      <button class="btn btn-primary" id="btn-new-next" onclick="newNext()">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VUE 4 — SUCCES ════════════════════════════════ -->
+<div id="v-success" class="view">
+  <div class="app-header">
+    <div class="logo">✅</div>
+    <div class="htext"><div class="acr">MUST<span>-HERNIA</span></div><h1>Dossier créé avec succès</h1><p>Identifiant unique généré</p></div>
+  </div>
+  <div class="wrap">
+    <div class="id-hero">
+      <div class="id-label">Identifiant unique patient</div>
+      <div class="id-value" id="success-id">HI-2025-000</div>
+      <div class="id-sub">À inscrire sur le dossier papier du patient</div>
+      <div class="id-actions">
+        <button class="btn btn-ghost btn-sm" onclick="copyId()">📋 Copier</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Imprimer</button>
+      </div>
+      <div class="id-note"><strong>⚠️ Important</strong>Notez cet identifiant sur le dossier papier. Il sera utilisé lors des consultations de suivi.</div>
+    </div>
+    <div class="print-card"><p style="font-size:11px;font-weight:600;color:var(--amber)">Étiquette à coller sur le dossier</p><div class="print-id" id="print-id">HI-2025-000</div><p style="font-size:11px;margin-top:4px">MUST-HERNIA · Pr Mohamed Ben Amar · HMU Sfax</p></div>
+    <div class="card" style="margin-top:14px">
+      <div class="sh"><div class="sh-icon bg-b">📅</div><h3>Consultations de suivi</h3></div>
+      <p style="font-size:12px;color:var(--text-m);margin-bottom:12px">Cliquez pour enregistrer les données de chaque visite :</p>
+      <div class="fu-grid" id="success-fu-btns">
+        <button class="fu-btn fu-m1" onclick="openFollowup('M1')">Contrôle<br><strong>1 mois</strong></button>
+        <button class="fu-btn fu-m3" onclick="openFollowup('M3')">Contrôle<br><strong>3 mois</strong></button>
+        <button class="fu-btn fu-m6" onclick="openFollowup('M6')">Contrôle<br><strong>6 mois</strong></button>
+        <button class="fu-btn fu-m12" onclick="openFollowup('M12')">Contrôle<br><strong>12 mois</strong></button>
+        <button class="fu-btn fu-lt" onclick="openFollowup('LT')">Suivi<br><strong>Long terme</strong></button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:10px">
+      <button class="btn btn-ghost" onclick="showView('v-dash')">← Tableau de bord</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VUE 5 — RECHERCHE ══════════════════════════════ -->
+<div id="v-search" class="view">
+  <div class="app-header">
+    <div class="logo">🔍</div>
+    <div class="htext"><div class="acr">MUST<span>-HERNIA</span></div><h1>Recherche de dossier</h1><p>Par ID, nom ou numéro de dossier</p></div>
+  </div>
+  <div class="wrap">
+    <div class="card">
+      <div class="sh"><div class="sh-icon bg-b">🔎</div><h3>Rechercher un patient</h3></div>
+      <div class="search-row" style="margin-bottom:12px">
+        <input type="text" id="search-q" placeholder="ID patient, nom ou telephone…" onkeydown="if(event.key==='Enter')doSearch()">
+        <button class="btn btn-primary" onclick="doSearch()">Rechercher</button>
+      </div>
+      <div id="search-results"></div>
+    </div>
+    <button class="btn btn-ghost" onclick="showView('v-dash')">← Retour</button>
+  </div>
+</div>
+
+<!-- ══ VUE 6 — DOSSIER PATIENT ═══════════════════════ -->
+<div id="v-record" class="view">
+  <div class="app-header">
+    <div class="logo">📋</div>
+    <div class="htext"><div class="acr">MUST<span>-HERNIA</span></div><h1 id="rec-title">Dossier patient</h1><p id="rec-subtitle">—</p></div>
+  </div>
+  <div class="wrap">
+    <div class="rec-header">
+      <div class="rec-id" id="rec-id-display">—</div>
+      <div class="rec-name" id="rec-name-display">—</div>
+      <div class="rec-meta" id="rec-meta-display">—</div>
+    </div>
+    <div class="card">
+      <div class="sh"><div class="sh-icon bg-b">📊</div><h3>Suivi longitudinal</h3></div>
+      <div class="timeline" id="timeline-content"></div>
+    </div>
+    <div class="card">
+      <div class="sh"><div class="sh-icon bg-g">📅</div><h3>Ajouter / modifier une consultation</h3></div>
+      <div class="fu-grid">
+        <button class="fu-btn fu-m1" id="fu-m1-btn" onclick="openFollowup('M1')">Contrôle<br><strong>1 mois</strong></button>
+        <button class="fu-btn fu-m3" id="fu-m3-btn" onclick="openFollowup('M3')">Contrôle<br><strong>3 mois</strong></button>
+        <button class="fu-btn fu-m6" id="fu-m6-btn" onclick="openFollowup('M6')">Contrôle<br><strong>6 mois</strong></button>
+        <button class="fu-btn fu-m12" id="fu-m12-btn" onclick="openFollowup('M12')">Contrôle<br><strong>12 mois</strong></button>
+        <button class="fu-btn fu-lt" id="fu-lt-btn" onclick="openFollowup('LT')">Suivi<br><strong>Long terme</strong></button>
+      </div>
+    </div>
+    <button class="btn btn-ghost" onclick="showView('v-search')">← Retour</button>
+  </div>
+</div>
+
+<!-- ══ VUE 7 — SUIVI ══════════════════════════════════ -->
+<div id="v-followup" class="view">
+  <div class="app-header">
+    <div class="logo" id="fu-logo">📅</div>
+    <div class="htext"><div class="acr">MUST<span>-HERNIA</span></div><h1 id="fu-title">Contrôle 1 mois</h1><p id="fu-sub">—</p></div>
+  </div>
+  <div class="wrap" id="fu-form-wrap"></div>
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="showView('v-record')">← Dossier</button>
+    <button class="btn btn-ok" onclick="saveFU()">💾 Enregistrer le controle</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  ETAT & CONSTANTES
+// ════════════════════════════════════════════════════
+// ═══ CONFIGURATION — Collez ici l'URL de votre Apps Script ═══
+var API_URL = 'COLLEZ_ICI_VOTRE_URL_APPS_SCRIPT/exec';
+// ════════════════════════════════════════════════════════════
+
+var S = {
+  code: '',
+  currentId: null,
+  currentPatient: null,
+  newStep: 1,
+  newData: {},
+  currentPhase: null
+};
+var NEW_STEPS = 5;
+var NEW_TITLES = [
+  'Identification & Centre',
+  'Antécédents & Biologie préop',
+  'Hernie — Caractéristiques préop',
+  'Données per-opératoires',
+  'Post-op immédiat & Complications & EuraHS'
+];
+
+// ════════════════════════════════════════════════════
+//  APPEL API (fetch vers Apps Script — fonctionne sans compte Google)
+// ════════════════════════════════════════════════════
+function apiGet(action, params) {
+  var url = new URL(API_URL);
+  url.searchParams.set('action', action);
+  if (params) {
+    Object.keys(params).forEach(function(k) {
+      url.searchParams.set(k, params[k]);
+    });
+  }
+  return fetch(url.toString(), { method: 'GET', redirect: 'follow' })
+    .then(function(r) { return r.json(); });
+}
+
+function apiPost(action, body) {
+  body.action = action;
+  return fetch(API_URL, {
+    method: 'POST',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); });
+}
+
+// ════════════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════════════
+function doLogin() {
+  var code = document.getElementById('login-code').value.trim();
+  if (!code) return;
+  document.getElementById('login-err').style.display = 'none';
+  loading('Vérification…');
+  apiGet('authenticate', { code: code })
+    .then(function(r) {
+      stopLoading();
+      if (r && r.success) {
+        S.code = code;
+        document.getElementById('centre-badge').textContent = r.isAdmin ? '👑 Admin' : '👤 Utilisateur';
+        showView('v-dash');
+      } else {
+        document.getElementById('login-err').style.display = 'block';
+      }
+    })
+    .catch(function(err) {
+      stopLoading();
+      document.getElementById('login-err').style.display = 'block';
+      document.getElementById('login-err').textContent = 'Erreur réseau: ' + err.message;
+    });
+}
+
+function doLogout() {
+  S.code = ''; S.currentId = null; S.currentPatient = null;
+  document.getElementById('login-code').value = '';
+  showView('v-login');
+}
+
+// ════════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════════
+function showView(id) {
+  var views = document.querySelectorAll('.view');
+  for (var i = 0; i < views.length; i++) views[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function quickAccess() {
+  var id = document.getElementById('quick-id').value.trim().toUpperCase();
+  if (!id) return;
+  loadPatient(id);
+}
+
+// ════════════════════════════════════════════════════
+//  CHARGEMENT PATIENT
+// ════════════════════════════════════════════════════
+function loadPatient(patientId) {
+  loading('Chargement du dossier…');
+  apiGet('getPatient', { code: S.code, patientId: patientId })
+    .then(function(r) {
+      stopLoading();
+      if (r && r.success) {
+        S.currentId = patientId;
+        S.currentPatient = r.patient;
+        document.getElementById('quick-err').style.display = 'none';
+        renderRecord();
+        showView('v-record');
+      } else {
+        var errEl = document.getElementById('quick-err');
+        errEl.textContent = (r && r.error) ? r.error : 'Patient introuvable';
+        errEl.style.display = 'block';
+        var sr = document.getElementById('search-results');
+        if (sr) sr.innerHTML = '<p style="color:var(--red);font-size:13px">' + errEl.textContent + '</p>';
+      }
+    })
+    .catch(function(e) { stopLoading(); alert('Erreur réseau: ' + e.message); });
+}
+
+function loadPatientSilent(id) {
+  apiGet('getPatient', { code: S.code, patientId: id })
+    .then(function(r) {
+      if (r && r.success) { S.currentId = id; S.currentPatient = r.patient; }
+    });
+}
+
+// ════════════════════════════════════════════════════
+//  RENDU DOSSIER PATIENT
+// ════════════════════════════════════════════════════
+function renderRecord() {
+  var p = S.currentPatient;
+  if (!p) return;
+  var phases = [];
+  try { phases = JSON.parse(p['Phases_completes'] || '[]'); } catch(e) {}
+
+  document.getElementById('rec-title').textContent = 'Dossier ' + p['Patient_ID'];
+  document.getElementById('rec-subtitle').textContent = p['Nom_prenom'] || '—';
+  document.getElementById('rec-id-display').textContent = p['Patient_ID'];
+  document.getElementById('rec-name-display').textContent = p['Nom_prenom'] || '—';
+  document.getElementById('rec-meta-display').textContent =
+    (p['Age'] || '?') + ' ans · ' + (p['Centre'] || '—') + ' · ' + (p['Date_operation'] || '—') + ' · ' + (p['Technique'] || '—');
+
+  var phases_config = [
+    { id:'J0',  label:'Initial J0',       date_col:'Cree_le',   sum_fn:function(x){ return 'ASA ' + (x['ASA']||'?') + ' · ' + (x['Technique']||'—') + ' · VAS J1: ' + (x['VAS_J1']||'—'); } },
+    { id:'M1',  label:'Contrôle 1 mois',  date_col:'M1_date',   sum_fn:function(x){ return 'VAS: ' + (x['M1_VAS']||'—') + ' · Satisfaction: ' + (x['M1_satisfaction']||'—') + '/10'; } },
+    { id:'M3',  label:'Contrôle 3 mois',  date_col:'M3_date',   sum_fn:function(x){ return 'VAS: ' + (x['M3_VAS']||'—') + ' · Douleur chronique: ' + (x['M3_douleur_chronique']||'—') + ' · Recidive: ' + (x['M3_recidive']||'—'); } },
+    { id:'M6',  label:'Contrôle 6 mois',  date_col:'M6_date',   sum_fn:function(x){ return 'VAS: ' + (x['M6_VAS']||'—') + ' · Recidive: ' + (x['M6_recidive']||'—'); } },
+    { id:'M12', label:'Contrôle 12 mois', date_col:'M12_date',  sum_fn:function(x){ return 'VAS: ' + (x['M12_VAS']||'—') + ' · Recidive: ' + (x['M12_recidive']||'—'); } },
+    { id:'LT',  label:'Suivi long terme', date_col:'LT_date',   sum_fn:function(x){ return 'Recul: ' + (x['LT_suivi_mois']||'—') + ' mois · VAS: ' + (x['LT_VAS']||'—'); } }
+  ];
+
+  var tlHtml = '';
+  for (var i = 0; i < phases_config.length; i++) {
+    var ph = phases_config[i];
+    var done = phases.indexOf(ph.id) !== -1;
+    var date = p[ph.date_col] || '';
+    tlHtml += '<div class="tl-phase ' + (done ? 'done' : '') + '">' +
+      '<div class="tl-header">' +
+      '<span class="tl-title">' + ph.label + '</span>' +
+      (date ? '<span class="tl-date">' + date + '</span>' : '') +
+      '<span class="tl-status ' + (done ? 'st-done' : 'st-none') + '">' + (done ? '✓ Complété' : 'En attente') + '</span>' +
+      '</div>' +
+      (done ? '<div class="tl-summary">' + ph.sum_fn(p) + '</div>' : '') +
+      '</div>';
+  }
+  document.getElementById('timeline-content').innerHTML = tlHtml;
+
+  var fu_map = { M1:'fu-m1-btn', M3:'fu-m3-btn', M6:'fu-m6-btn', M12:'fu-m12-btn', LT:'fu-lt-btn' };
+  var fu_keys = Object.keys(fu_map);
+  for (var k = 0; k < fu_keys.length; k++) {
+    var btn = document.getElementById(fu_map[fu_keys[k]]);
+    if (btn) btn.className = 'fu-btn fu-' + fu_keys[k].toLowerCase() + (phases.indexOf(fu_keys[k]) !== -1 ? ' done' : '');
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  FORMULAIRE NOUVEAU PATIENT (5 etapes)
+// ════════════════════════════════════════════════════
+function initNewForm() {
+  S.newStep = 1; S.newData = {};
+  renderNewStep();
+}
+
+function renderNewStep() {
+  var wrap = document.getElementById('new-form-wrap');
+  var dots = '';
+  for (var i = 1; i <= NEW_STEPS; i++) {
+    dots += '<div class="prog-dot' + (i < S.newStep ? ' done' : (i === S.newStep ? ' now' : '')) + '"></div>';
+  }
+  document.getElementById('new-dots').innerHTML = dots;
+  document.getElementById('new-step-lbl').textContent = 'Étape ' + S.newStep + '/' + NEW_STEPS;
+  document.getElementById('new-step-title').textContent = NEW_TITLES[S.newStep - 1];
+  document.getElementById('new-nav-info').textContent = 'Étape ' + S.newStep + ' / ' + NEW_STEPS;
+  var btn = document.getElementById('btn-new-next');
+  btn.textContent = S.newStep === NEW_STEPS ? '✓ Creer le dossier' : 'Suivant →';
+  btn.className = 'btn ' + (S.newStep === NEW_STEPS ? 'btn-ok' : 'btn-primary');
+  document.getElementById('btn-new-prev').disabled = S.newStep === 1;
+  wrap.innerHTML = stepHtml(S.newStep);
+  prefillNewStep();
+}
+
+function prefillNewStep() {
+  var d = S.newData;
+  var inputs = document.querySelectorAll('[id^="nf_"]');
+  for (var i = 0; i < inputs.length; i++) {
+    var key = inputs[i].id.replace('nf_', '');
+    if (d[key] !== undefined && inputs[i].tagName !== 'INPUT' || inputs[i].type !== 'radio') {
+      if (inputs[i].type === 'checkbox') inputs[i].checked = !!d[key];
+      else inputs[i].value = d[key] || '';
+    }
+  }
+  var radioFields = ['centre','lateralite','asa','tabac','diabete','bpco','bph',
+    'atcd_chir_yn','primaire_recidive','reductible',
+    'technique','anesthesie','hypotension_perop','conversion',
+    'fermeture_peritoine','poids_mesh','fixation_mesh',
+    'complications_yn'];
+  for (var r = 0; r < radioFields.length; r++) {
+    var val = d[radioFields[r]];
+    if (val) {
+      var radio = document.querySelector('input[name="nf_' + radioFields[r] + '"][value="' + val + '"]');
+      if (radio) radio.checked = true;
+    }
+  }
+}
+
+function getVal(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function getRadio(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+function getChecks(name) {
+  var els = document.querySelectorAll('input[name="' + name + '"]:checked');
+  var vals = [];
+  for (var i = 0; i < els.length; i++) vals.push(els[i].value);
+  return vals.join(', ');
+}
+
+function collectNewStep() {
+  var d = S.newData;
+  switch (S.newStep) {
+    case 1:
+      d.centre = getRadio('nf_centre');
+      d.num_dossier = getVal('nf_num_dossier');
+      d.nom_prenom = getVal('nf_nom_prenom');
+      d.telephone = getVal('nf_telephone');
+      d.age = getVal('nf_age');
+      d.date_operation = getVal('nf_date_operation');
+      d.chirurgien = getVal('nf_chirurgien');
+      break;
+    case 2:
+      d.asa = getRadio('nf_asa');
+      d.tabac = getRadio('nf_tabac');
+      d.diabete = getRadio('nf_diabete');
+      d.bpco = getRadio('nf_bpco');
+      d.bph = getRadio('nf_bph');
+      d.imc = getVal('nf_imc');
+      d.autres_atcd = getVal('nf_autres_atcd');
+      d.atcd_chir_yn = getRadio('nf_atcd_chir_yn');
+      d.atcd_chir_detail = getVal('nf_atcd_chir_detail');
+      d.hb_preop = getVal('nf_hb_preop');
+      d.gs_rh = getVal('nf_gs_rh');
+      d.gb_preop = getVal('nf_gb_preop');
+      d.plaquettes_preop = getVal('nf_plaquettes_preop');
+      d.albumine = getVal('nf_albumine');
+      d.tp_inr = getVal('nf_tp_inr');
+      d.creatinine = getVal('nf_creatinine');
+      d.glycemie = getVal('nf_glycemie');
+      d.hba1c = getVal('nf_hba1c');
+      d.autres_bio = getVal('nf_autres_bio');
+      break;
+    case 3:
+      d.type_hernie = getRadio('nf_type_hernie');
+      d.classification_ehs = getVal('nf_classification_ehs');
+      d.lateralite = getRadio('nf_lateralite');
+      d.primaire_recidive = getRadio('nf_primaire_recidive');
+      d.reductible = getRadio('nf_reductible');
+      d.anciennete_mois = getVal('nf_anciennete_mois');
+      d.douleur_preop_vas = getVal('nf_douleur_preop_vas');
+      break;
+    case 4:
+      d.technique = getRadio('nf_technique');
+      d.fermeture_peritoine = getRadio('nf_fermeture_peritoine');
+      d.anesthesie = getRadio('nf_anesthesie');
+      d.duree_intervention = getVal('nf_duree_intervention');
+      d.taille_mesh = getVal('nf_taille_mesh');
+      d.poids_mesh = getRadio('nf_poids_mesh');
+      d.fixation_mesh = getRadio('nf_fixation_mesh');
+      d.taille_collet = getVal('nf_taille_collet');
+      d.taille_sac = getVal('nf_taille_sac');
+      d.hypotension_perop = getRadio('nf_hypotension_perop');
+      d.conversion = getRadio('nf_conversion');
+      d.accidents_perop = getVal('nf_accidents_perop');
+      d.gestes_associes = getVal('nf_gestes_associes');
+      break;
+    case 5:
+      d.vas_j1 = getVal('nf_vas_j1');
+      d.duree_hospit = getVal('nf_duree_hospit');
+      d.complications_yn = getRadio('nf_complications_yn');
+      d.compl_non_spec = getChecks('nf_compl_ns');
+      d.compl_spec = getChecks('nf_compl_sp');
+      d.compl_clavien_max = getVal('nf_compl_clavien');
+      d.compl_detail = getVal('nf_compl_detail');
+      var eurFields = ['repos','activite','max','int','ext','sport','lourds','esthet_abdo','esthet_hernie'];
+      for (var ef = 0; ef < eurFields.length; ef++) {
+        d['eurahs_pre_' + eurFields[ef]] = getVal('nf_eurahs_' + eurFields[ef]);
+      }
+      break;
+  }
+}
+
+function validateNewStep() {
+  if (S.newStep === 1) {
+    if (!S.newData.centre) { alert('Selectionnez le centre.'); return false; }
+    if (!S.newData.num_dossier) { alert('N° de dossier obligatoire.'); return false; }
+    if (!S.newData.age) { alert('Age obligatoire.'); return false; }
+  }
+  if (S.newStep === 4) {
+    if (!S.newData.technique) { alert('Selectionnez la technique operatoire.'); return false; }
+  }
+  return true;
+}
+
+function newNext() {
+  collectNewStep();
+  if (!validateNewStep()) return;
+  if (S.newStep < NEW_STEPS) { S.newStep++; renderNewStep(); }
+  else submitNewPatient();
+}
+function newPrev() {
+  collectNewStep();
+  if (S.newStep > 1) { S.newStep--; renderNewStep(); }
+  else showView('v-dash');
+}
+
+function submitNewPatient() {
+  loading('Création du dossier…');
+  apiPost('createPatient', { code: S.code, data: S.newData })
+    .then(function(r) {
+      stopLoading();
+      if (r && r.success) {
+        S.currentId = r.patientId;
+        document.getElementById('success-id').textContent = r.patientId;
+        document.getElementById('print-id').textContent = r.patientId;
+        loadPatientSilent(r.patientId);
+        showView('v-success');
+      } else {
+        alert('Erreur: ' + (r ? r.error : 'Inconnue'));
+      }
+    })
+    .catch(function(e) { stopLoading(); alert('Erreur réseau: ' + e.message); });
+}
+
+// ════════════════════════════════════════════════════
+//  RECHERCHE
+// ════════════════════════════════════════════════════
+function doSearch() {
+  var q = document.getElementById('search-q').value.trim();
+  if (!q) return;
+  loading('Recherche…');
+  apiGet('search', { code: S.code, query: q })
+    .then(function(r) {
+      stopLoading();
+      var wrap = document.getElementById('search-results');
+      if (!r || !r.success || !r.patients || r.patients.length === 0) {
+        wrap.innerHTML = '<p style="font-size:13px;color:var(--text-m)">Aucun résultat.</p>'; return;
+      }
+      var html = '';
+      for (var i = 0; i < r.patients.length; i++) {
+        var p = r.patients[i];
+        var phases = [];
+        try { phases = JSON.parse(p.phases || '[]'); } catch(e) {}
+        var allP = ['J0','M1','M3','M6','M12','LT'];
+        var pips = '';
+        for (var j = 0; j < allP.length; j++) {
+          pips += '<span class="phase-pip ' + (phases.indexOf(allP[j]) !== -1 ? 'pip-done' : 'pip-pend') + '">' + allP[j] + '</span>';
+        }
+        html += '<div class="sr-item" onclick="loadPatient(\'' + p.id + '\')">' +
+          '<div class="sr-id">' + p.id + '</div>' +
+          '<div style="flex:1"><div class="sr-name">' + (p.nom||'—') + ' · ' + (p.age||'?') + ' ans</div>' +
+          '<div class="sr-meta">' + (p.centre||'—') + ' · ' + (p.technique||'—') + ' · Créé le ' + (p.created||'—') + '</div></div>' +
+          '<div class="sr-phases">' + pips + '</div></div>';
+      }
+      wrap.innerHTML = html;
+    })
+    .catch(function(e) { stopLoading(); alert('Erreur réseau: ' + e.message); });
+}
+
+// ════════════════════════════════════════════════════
+//  SUIVI
+// ════════════════════════════════════════════════════
+function openFollowup(phase) {
+  S.currentPhase = phase;
+  var icons  = { M1:'🗓', M3:'📆', M6:'📅', M12:'📋', LT:'📊' };
+  var labels = { M1:'Contrôle 1 mois', M3:'Contrôle 3 mois', M6:'Contrôle 6 mois', M12:'Contrôle 12 mois', LT:'Suivi long terme' };
+  document.getElementById('fu-logo').textContent = icons[phase] || '📅';
+  document.getElementById('fu-title').textContent = labels[phase] || phase;
+  document.getElementById('fu-sub').textContent = S.currentId ? 'Dossier ' + S.currentId : '';
+  var p = S.currentPatient || {};
+  document.getElementById('fu-form-wrap').innerHTML = followupFormHtml(phase, p);
+  showView('v-followup');
+}
+
+function saveFU() {
+  var phase = S.currentPhase;
+  if (!phase || !S.currentId) return;
+  var data = collectFUData(phase);
+  loading('Enregistrement…');
+  apiPost('savePhase', { code: S.code, patientId: S.currentId, phase: phase, phaseData: data })
+    .then(function(r) {
+      if (r && r.success) {
+        return apiGet('getPatient', { code: S.code, patientId: S.currentId });
+      } else {
+        throw new Error(r ? (r.error || 'Erreur inconnue') : 'Erreur inconnue');
+      }
+    })
+    .then(function(r2) {
+      stopLoading();
+      if (r2 && r2.success) S.currentPatient = r2.patient;
+      renderRecord();
+      showView('v-record');
+    })
+    .catch(function(e) { stopLoading(); alert('Erreur: ' + e.message); });
+}
+
+function collectFUData(phase) {
+  var data = {};
+  data[phase + '_date'] = getVal('fu_date');
+  data[phase + '_VAS']  = getVal('fu_vas');
+  data[phase + '_satisfaction'] = getVal('fu_satisfaction');
+  if (phase === 'M1') {
+    data['M1_serome'] = getRadio('fu_serome');
+    data['M1_hematome'] = getRadio('fu_hematome');
+    data['M1_reprise_travail_j'] = getVal('fu_reprise_travail');
+    data['M1_reprise_activite_j'] = getVal('fu_reprise_activite');
+    data['M1_complications'] = getVal('fu_complications');
+    data['M1_EuraHS_repos'] = getVal('fu_eurahs_repos');
+    data['M1_EuraHS_activite'] = getVal('fu_eurahs_activite');
+    data['M1_EuraHS_esthet'] = getVal('fu_eurahs_esthet');
+  }
+  if (phase === 'M3') {
+    data['M3_douleur_chronique'] = getRadio('fu_douleur_chronique');
+    data['M3_type_douleur'] = getVal('fu_type_douleur');
+    data['M3_CCS_inconfort'] = getVal('fu_ccs_inconfort');
+    data['M3_CCS_douleur'] = getVal('fu_ccs_douleur');
+    data['M3_CCS_mouvement'] = getVal('fu_ccs_mouvement');
+    data['M3_EuraHS_repos'] = getVal('fu_eurahs_repos');
+    data['M3_EuraHS_activite'] = getVal('fu_eurahs_activite');
+    data['M3_recidive'] = getRadio('fu_recidive');
+    data['M3_commentaires'] = getVal('fu_commentaires');
+  }
+  if (phase === 'M6' || phase === 'M12' || phase === 'LT') {
+    data[phase + '_douleur_chronique'] = getRadio('fu_douleur_chronique');
+    data[phase + '_recidive'] = getRadio('fu_recidive');
+    data[phase + '_delai_recidive_mois'] = getVal('fu_delai_recidive');
+    data[phase + '_EuraHS_score'] = getVal('fu_eurahs_global');
+    if (phase === 'LT') {
+      data['LT_suivi_mois'] = getVal('fu_suivi_mois');
+      data['LT_commentaires'] = getVal('fu_commentaires');
+    }
+  }
+  return data;
+}
+
+// ════════════════════════════════════════════════════
+//  UTILITAIRES
+// ════════════════════════════════════════════════════
+function loading(msg) {
+  document.getElementById('loading-msg').textContent = msg || 'Chargement…';
+  document.getElementById('loading-overlay').classList.add('on');
+}
+function stopLoading() { document.getElementById('loading-overlay').classList.remove('on'); }
+function copyId() {
+  var id = S.currentId || document.getElementById('success-id').textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(id).then(function(){ alert('ID "' + id + '" copie!'); });
+}
+function togFermeture(radio) {
+  var show = (radio.value === 'TAPP' || radio.value === 'TEP');
+  var el = document.getElementById('d-fermeture');
+  if (el) el.style.display = show ? 'block' : 'none';
+}
+function togComplications(radio) {
+  var el = document.getElementById('d-compls');
+  if (el) el.style.display = (radio.value === 'Oui') ? 'block' : 'none';
+}
+function togAtcdChir(radio) {
+  var el = document.getElementById('d-atcd-chir');
+  if (el) el.style.display = (radio.value === 'Oui') ? 'block' : 'none';
+}
+function updateEuraHSTotal() {
+  var fields = ['repos','activite','max','int','ext','sport','lourds','esthet_abdo','esthet_hernie'];
+  var total = 0;
+  for (var i = 0; i < fields.length; i++) {
+    var el = document.getElementById('nf_eurahs_' + fields[i]);
+    if (el) total += parseInt(el.value) || 0;
+  }
+  var display = document.getElementById('eurahs-total-val');
+  if (display) display.textContent = total + ' / 90';
+}
+
+// ════════════════════════════════════════════════════
+//  HTML — AIDE VISUELLE
+// ════════════════════════════════════════════════════
+function showAid(name) {
+  var AIDS = getAIDS();
+  var a = AIDS[name];
+  if (!a) return;
+  document.getElementById('aid-title').textContent = a.title;
+  document.getElementById('aid-icon').textContent  = a.icon || '📊';
+  document.getElementById('aid-body').innerHTML    = a.html;
+  document.getElementById('aid-overlay').classList.add('on');
+}
+function closeAid() { document.getElementById('aid-overlay').classList.remove('on'); }
+
+function getAIDS() {
+  return {
+    eva: {
+      title: 'Echelle EVA / NRS 0-10', icon: '📊',
+      html: '<div style="margin-bottom:12px"><svg viewBox="0 0 500 80" xmlns="http://www.w3.org/2000/svg" style="width:100%"><defs><linearGradient id="eg" x1="0" x2="1"><stop offset="0%" stop-color="#22c55e"/><stop offset="40%" stop-color="#facc15"/><stop offset="70%" stop-color="#fb923c"/><stop offset="100%" stop-color="#dc2626"/></linearGradient></defs><rect x="10" y="25" width="480" height="22" rx="11" fill="url(#eg)"/><text x="10" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#1e3a5f">0</text><text x="58" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">1</text><text x="106" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">2</text><text x="154" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">3</text><text x="202" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">4</text><text x="250" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">5</text><text x="298" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">6</text><text x="346" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">7</text><text x="394" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">8</text><text x="442" y="72" text-anchor="middle" font-size="11" fill="#1e3a5f">9</text><text x="490" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">10</text><text x="10" y="18" font-size="14" text-anchor="middle">😊</text><text x="250" y="18" font-size="14" text-anchor="middle">😟</text><text x="490" y="18" font-size="14" text-anchor="middle">😭</text></svg></div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+        '<div style="flex:1;min-width:80px;background:#dcfce7;border-radius:10px;padding:10px;text-align:center"><strong style="color:#15803d;font-size:18px">0-2</strong><div style="font-size:11px;color:#15803d;margin-top:3px">Aucune/Legere</div></div>' +
+        '<div style="flex:1;min-width:80px;background:#fef9c3;border-radius:10px;padding:10px;text-align:center"><strong style="color:#92400e;font-size:18px">3-4</strong><div style="font-size:11px;color:#92400e;margin-top:3px">Moderee</div></div>' +
+        '<div style="flex:1;min-width:80px;background:#fed7aa;border-radius:10px;padding:10px;text-align:center"><strong style="color:#c2410c;font-size:18px">5-6</strong><div style="font-size:11px;color:#c2410c;margin-top:3px">Importante</div></div>' +
+        '<div style="flex:1;min-width:80px;background:#fecaca;border-radius:10px;padding:10px;text-align:center"><strong style="color:#991b1b;font-size:18px">7-8</strong><div style="font-size:11px;color:#991b1b;margin-top:3px">Severe</div></div>' +
+        '<div style="flex:1;min-width:80px;background:#ef4444;border-radius:10px;padding:10px;text-align:center"><strong style="color:#fff;font-size:18px">9-10</strong><div style="font-size:11px;color:#fff;margin-top:3px">Insupportable</div></div>' +
+        '</div><div class="aid-tip">💡 Demandez: "Sur 0 a 10, comment evaluez-vous votre douleur en ce moment ?"</div>'
+    },
+    asa: {
+      title: 'Score ASA', icon: '🩺',
+      html: '<table class="aid-table"><tr><th>Grade</th><th>Definition</th><th>Exemples</th></tr>' +
+        '<tr><td style="font-weight:700;color:#15803d">ASA I</td><td>Patient sain</td><td>Jeune adulte en bonne sante</td></tr>' +
+        '<tr><td style="font-weight:700;color:#1e3a5f">ASA II</td><td>Maladie systemique legere</td><td>HTA controlee, diabete equilibre, tabac, obesite BMI &lt;35</td></tr>' +
+        '<tr><td style="font-weight:700;color:#d97706">ASA III</td><td>Maladie systemique severe</td><td>HTA non controlee, BPCO, IRC moderee, IMC ≥40</td></tr>' +
+        '<tr><td style="font-weight:700;color:#dc2626">ASA IV</td><td>Maladie mettant la vie en danger</td><td>IC severe, sepsis, IRC terminale</td></tr></table>' +
+        '<div class="aid-tip">💡 La majorite des patients herniaires sont ASA I-II.</div>'
+    },
+    ehs: {
+      title: 'Classification EHS — Hernie Inguinale', icon: '🗺️',
+      html: '<p style="font-size:12px;color:var(--text-m);margin-bottom:12px">Combine le <strong>type anatomique</strong> (M/L/F) et la <strong>taille du collet</strong> (1/2/3). Ex: L2 = Laterale, collet 1.5-3 cm</p>' +
+        '<div class="ehs-grid">' +
+        '<div class="ehs-cell ehs-head">Type</div><div class="ehs-cell ehs-head">1 — &lt;1.5cm</div><div class="ehs-cell ehs-head">2 — 1.5-3cm</div><div class="ehs-cell ehs-head">3 — &gt;3cm</div>' +
+        '<div class="ehs-cell ehs-row-head" style="text-align:left;font-size:11px"><strong>M</strong> Mediale<br>(Directe)</div>' +
+        '<div class="ehs-cell ehs-m"><span class="ehs-code">M1</span></div><div class="ehs-cell ehs-m"><span class="ehs-code">M2</span></div><div class="ehs-cell ehs-m"><span class="ehs-code">M3</span></div>' +
+        '<div class="ehs-cell ehs-row-head" style="text-align:left;font-size:11px"><strong>L</strong> Laterale<br>(Indirecte)</div>' +
+        '<div class="ehs-cell ehs-l"><span class="ehs-code">L1</span></div><div class="ehs-cell ehs-l"><span class="ehs-code">L2</span></div><div class="ehs-cell ehs-l"><span class="ehs-code">L3</span></div>' +
+        '<div class="ehs-cell ehs-row-head" style="text-align:left;font-size:11px"><strong>F</strong> Femorale<br>(Crurale)</div>' +
+        '<div class="ehs-cell ehs-f"><span class="ehs-code">F1</span></div><div class="ehs-cell ehs-f"><span class="ehs-code">F2</span></div><div class="ehs-cell ehs-f"><span class="ehs-code">F3</span></div>' +
+        '</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' +
+        '<div style="background:var(--amber-l);border-radius:8px;padding:8px 12px;font-size:12px;flex:1"><strong>🔁 Recidive</strong><br>Ajouter "r" : ex. <strong>L2r</strong></div>' +
+        '<div style="background:var(--cyan-l);border-radius:8px;padding:8px 12px;font-size:12px;flex:1"><strong>Bilatérale</strong><br>Decrire chaque cote : ex. <strong>L2 D + M1 G</strong></div>' +
+        '</div><div class="aid-tip">💡 Mesurer le collet lors de l\'exploration per-operatoire.</div>'
+    },
+    clavien: {
+      title: 'Classification Clavien-Dindo', icon: '⚠️',
+      html: '<table class="aid-table"><tr><th>Grade</th><th>Definition</th><th>Exemples (hernie)</th></tr>' +
+        '<tr><td style="font-weight:700">I</td><td>Deviation mineure sans traitement specifique</td><td>Fievre isolee, infection superficielle traitee au lit</td></tr>' +
+        '<tr><td style="font-weight:700">II</td><td>Traitement medical (ATB, antalgiques...)</td><td>Infection de paroi sous ATB, serome traite medicalement</td></tr>' +
+        '<tr><td style="font-weight:700;color:var(--amber)">IIIa</td><td>Intervention sans anesthesie generale</td><td>Drainage collection sous AL, evacuation serome</td></tr>' +
+        '<tr><td style="font-weight:700;color:var(--amber)">IIIb</td><td>Intervention sous anesthesie generale</td><td>Reprise pour hematome compressif</td></tr>' +
+        '<tr><td style="font-weight:700;color:var(--red)">IVa</td><td>Defaillance mono-organe</td><td>Ischaemie testiculaire avec choc septique</td></tr>' +
+        '<tr><td style="font-weight:700;color:var(--red)">IVb</td><td>Defaillance multi-organes</td><td>Sepsis severe</td></tr>' +
+        '<tr><td style="font-weight:700;background:#1e3a5f;color:#fff">V</td><td colspan="2" style="background:#1e3a5f;color:#fff"><strong>Deces</strong></td></tr></table>'
+    },
+    eurahs: {
+      title: 'Score EuraHS-QoL', icon: '📊',
+      html: '<p style="font-size:12px;color:var(--text-m);margin-bottom:10px">9 items, chacun cote de <strong>0 (aucune gene) a 10 (gene maximale)</strong>. Score total max = 90.</p>' +
+        '<table class="aid-table" style="font-size:12px"><tr><th>Domaine</th><th>Item</th><th>0</th><th>10</th></tr>' +
+        '<tr><td rowspan="3" style="background:#dbeafe;font-weight:700">Douleur</td><td>Au repos</td><td>Aucune</td><td>Insupportable</td></tr>' +
+        '<tr><td>A l\'activite</td><td>Aucune</td><td>Insupportable</td></tr>' +
+        '<tr><td>Pire douleur/semaine</td><td>Aucune</td><td>Insupportable</td></tr>' +
+        '<tr><td rowspan="4" style="background:#dcfce7;font-weight:700">Activites</td><td>Interieur maison</td><td>Aucune gene</td><td>Gene max</td></tr>' +
+        '<tr><td>Exterieur</td><td>Aucune gene</td><td>Gene max</td></tr>' +
+        '<tr><td>Sport</td><td>Aucune gene</td><td>Gene max</td></tr>' +
+        '<tr><td>Travaux lourds</td><td>Aucune gene</td><td>Gene max</td></tr>' +
+        '<tr><td rowspan="2" style="background:#ede9fe;font-weight:700">Esthetique</td><td>Forme abdomen</td><td>Tres beau</td><td>Tres laid</td></tr>' +
+        '<tr><td>Site hernie/cicatrice</td><td>Tres beau</td><td>Tres laid</td></tr></table>' +
+        '<div class="aid-tip">0-15: excellent · 16-45: modere · &gt;45: altere</div>'
+    },
+    ccs: {
+      title: 'Carolinas Comfort Scale (CCS)', icon: '📋',
+      html: '<p style="font-size:12px;color:var(--text-m);margin-bottom:12px">3 dimensions, chacune de 0 (aucune gene) a 5 (invalidante). Score max = 15.</p>' +
+        '<div class="ccs-dim"><h4>1. Inconfort / Sensation corps etranger (mesh)</h4>' +
+        '<div class="ccs-levels">' +
+        '<div class="ccs-lv" style="background:#dcfce7"><div class="cn" style="color:#15803d">0</div><div class="cl" style="color:#15803d">Aucune</div></div>' +
+        '<div class="ccs-lv" style="background:#d1fae5"><div class="cn">1</div><div class="cl">Legere</div></div>' +
+        '<div class="ccs-lv" style="background:#fef9c3"><div class="cn">2</div><div class="cl">Moderee</div></div>' +
+        '<div class="ccs-lv" style="background:#fed7aa"><div class="cn">3</div><div class="cl">Souvent conscient</div></div>' +
+        '<div class="ccs-lv" style="background:#fecaca"><div class="cn">4</div><div class="cl">Gene importante</div></div>' +
+        '<div class="ccs-lv" style="background:#ef4444"><div class="cn" style="color:#fff">5</div><div class="cl" style="color:#fff">Invalide</div></div>' +
+        '</div></div>' +
+        '<div class="ccs-dim"><h4>2. Douleur lors des mouvements</h4>' +
+        '<div class="ccs-levels"><div class="ccs-lv" style="background:#dcfce7"><div class="cn" style="color:#15803d">0</div><div class="cl">Aucune</div></div><div class="ccs-lv" style="background:#d1fae5"><div class="cn">1</div><div class="cl">Effort intense</div></div><div class="ccs-lv" style="background:#fef9c3"><div class="cn">2</div><div class="cl">Activite normale</div></div><div class="ccs-lv" style="background:#fed7aa"><div class="cn">3</div><div class="cl">Mouvement simple</div></div><div class="ccs-lv" style="background:#fecaca"><div class="cn">4</div><div class="cl">Frequente</div></div><div class="ccs-lv" style="background:#ef4444"><div class="cn" style="color:#fff">5</div><div class="cl" style="color:#fff">Constante</div></div></div></div>' +
+        '<div class="ccs-dim"><h4>3. Raideur / Limitation amplitude</h4>' +
+        '<div class="ccs-levels"><div class="ccs-lv" style="background:#dcfce7"><div class="cn" style="color:#15803d">0</div><div class="cl">Aucune</div></div><div class="ccs-lv" style="background:#d1fae5"><div class="cn">1</div><div class="cl">Legere matin</div></div><div class="ccs-lv" style="background:#fef9c3"><div class="cn">2</div><div class="cl">Notable</div></div><div class="ccs-lv" style="background:#fed7aa"><div class="cn">3</div><div class="cl">Limite habituel</div></div><div class="ccs-lv" style="background:#fecaca"><div class="cn">4</div><div class="cl">Importante</div></div><div class="ccs-lv" style="background:#ef4444"><div class="cn" style="color:#fff">5</div><div class="cl" style="color:#fff">Immobilite</div></div></div></div>' +
+        '<div class="aid-tip">0-3: excellent · 4-7: acceptable · 8+: gene significative liee au mesh</div>'
+    },
+    mesh: {
+      title: 'Poids du mesh prothetique', icon: '🕸️',
+      html: '<div class="aid-zone">' +
+        '<div class="az" style="background:#dcfce7;flex:1"><div class="az-score" style="color:#15803d">Leger</div><div class="az-lbl" style="color:#15803d">&lt;50 g/m2</div><div class="az-desc" style="color:#166534;font-size:11px;margin-top:5px">Moins de douleur chronique, meilleure compliance. Ex: Ultrapro, TiMesh</div></div>' +
+        '<div class="az" style="background:#fef9c3;flex:1"><div class="az-score" style="color:#92400e">Standard</div><div class="az-lbl" style="color:#92400e">50-90 g/m2</div><div class="az-desc" style="color:#78350f;font-size:11px;margin-top:5px">Bon compromis resistance/tolerance. Ex: Prolene, Parietex</div></div>' +
+        '<div class="az" style="background:#fee2e2;flex:1"><div class="az-score" style="color:#991b1b">Lourd</div><div class="az-lbl" style="color:#991b1b">&gt;90 g/m2</div><div class="az-desc" style="color:#7f1d1d;font-size:11px;margin-top:5px">Risque augmente de douleur chronique. Grandes hernies/recidives. Ex: Marlex</div></div>' +
+        '</div><div class="aid-tip">💡 EHS 2021 recommande les meshes legers pour reduire la douleur chronique.</div>'
+    },
+    fixation: {
+      title: 'Fixation du mesh', icon: '📌',
+      html: '<table class="aid-table"><tr><th>Technique</th><th>Avantages</th><th>Risque nevralgie</th></tr>' +
+        '<tr><td><strong>Tacker résorbable</strong></td><td>Bonne fixation initiale, disparait en 12-18 mois</td><td style="background:#fef9c3">Modere</td></tr>' +
+        '<tr><td><strong>Tacker non résorbable</strong></td><td>Fixation permanente</td><td style="background:#fecaca">Eleve</td></tr>' +
+        '<tr><td><strong>Colle biologique</strong></td><td>Moins de douleur, fixation douce</td><td style="background:#dcfce7">Faible</td></tr>' +
+        '<tr><td><strong>Sans fixation</strong></td><td>Minimum de douleur chronique</td><td style="background:#dcfce7">Tres faible</td></tr></table>' +
+        '<div class="aid-tip">💡 Pour hernies L1-M2 en TAPP/TEP: sans fixation souvent suffisant.</div>'
+    }
+  };
+}
+
+// ════════════════════════════════════════════════════
+//  HTML DES ETAPES
+// ════════════════════════════════════════════════════
+function vasSlider(id, maxVal, currentVal) {
+  maxVal = maxVal || 10;
+  currentVal = currentVal || 0;
+  return '<div class="vas-wrap">' +
+    '<div class="vas-row">' +
+    '<span style="font-size:11px;color:var(--text-m)">0</span>' +
+    '<input type="range" id="' + id + '" min="0" max="' + maxVal + '" value="' + currentVal + '" step="1" oninput="document.getElementById(\'' + id + '_v\').textContent=this.value">' +
+    '<span style="font-size:11px;color:var(--text-m)">' + maxVal + '</span>' +
+    '<span class="vas-val" id="' + id + '_v">' + currentVal + '</span>' +
+    '<button type="button" class="aid-btn" onclick="showAid(\'eva\')">📊 Guide EVA</button>' +
+    '</div>' +
+    '<div class="vas-labels"><span>Pas de douleur</span><span>Douleur maximale</span></div>' +
+    '</div>';
+}
+
+function euraHSItem(id, label) {
+  return '<div class="eurahs-item">' +
+    '<span class="eurahs-label">' + label + '</span>' +
+    '<input type="range" style="flex:2;accent-color:var(--primary-m)" id="' + id + '" min="0" max="10" value="0" step="1" oninput="document.getElementById(\'' + id + '_v\').textContent=this.value;updateEuraHSTotal()">' +
+    '<span class="eurahs-score" id="' + id + '_v">0</span>' +
+    '</div>';
+}
+
+function stepHtml(n) {
+  if (n === 1) return '' +
+    '<div class="card">' +
+    '<div class="sh"><div class="sh-icon bg-b">🏥</div><h3>Centre opérateur</h3></div>' +
+    '<div class="tg" style="margin-bottom:14px">' +
+    '<label class="to"><input type="radio" name="nf_centre" value="Tataouine"> 🏥 Hôp. Tataouine</label>' +
+    '<label class="to"><input type="radio" name="nf_centre" value="Sfax"> 🏥 HMU Sfax</label>' +
+    '</div>' +
+    '<div class="sh"><div class="sh-icon bg-b">📋</div><h3>Identification</h3></div>' +
+    '<div class="g g-auto">' +
+    '<div class="f"><label class="lbl">N° Dossier <span class="r">*</span></label><input type="text" id="nf_num_dossier" placeholder="ex. 123/2025"></div>' +
+    '<div class="f"><label class="lbl">Nom et Prénom</label><input type="text" id="nf_nom_prenom" placeholder="Nom Prenom"></div>' +
+    '<div class="f"><label class="lbl">Telephone</label><input type="text" id="nf_telephone" placeholder="ex. 98 123 456"></div>' +
+    '<div class="f"><label class="lbl">Âge (ans) <span class="r">*</span></label><input type="number" id="nf_age" min="1" max="110" placeholder="ex. 54"></div>' +
+    '<div class="f"><label class="lbl">Date operation</label><input type="date" id="nf_date_operation"></div>' +
+    '<div class="f"><label class="lbl">Chirurgien</label><input type="text" id="nf_chirurgien" placeholder="Nom du chirurgien"></div>' +
+    '</div></div>';
+
+  if (n === 2) return '' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-a">👤</div><h3>Comorbidités & Facteurs de risque</h3></div>' +
+    '<div class="g g3">' +
+    '<div class="f"><label class="lbl">Score ASA <button type="button" class="aid-btn" onclick="showAid(\'asa\')">📋 Guide</button></label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_asa" value="I">I</label><label class="to"><input type="radio" name="nf_asa" value="II">II</label><label class="to warn"><input type="radio" name="nf_asa" value="III">III</label><label class="to dng"><input type="radio" name="nf_asa" value="IV">IV</label></div></div>' +
+    '<div class="f"><label class="lbl">Tabac / Chiqueur</label><div class="tg"><label class="to"><input type="radio" name="nf_tabac" value="Non">Non</label><label class="to warn"><input type="radio" name="nf_tabac" value="Oui">Oui</label></div></div>' +
+    '<div class="f"><label class="lbl">Diabete</label><div class="tg"><label class="to"><input type="radio" name="nf_diabete" value="Non">Non</label><label class="to warn"><input type="radio" name="nf_diabete" value="Oui">Oui</label></div></div>' +
+    '<div class="f"><label class="lbl">BPCO</label><div class="tg"><label class="to"><input type="radio" name="nf_bpco" value="Non">Non</label><label class="to warn"><input type="radio" name="nf_bpco" value="Oui">Oui</label></div></div>' +
+    '<div class="f"><label class="lbl">BPH (Prostate)</label><div class="tg"><label class="to"><input type="radio" name="nf_bph" value="Non">Non</label><label class="to warn"><input type="radio" name="nf_bph" value="Oui">Oui</label></div></div>' +
+    '<div class="f"><label class="lbl">IMC (kg/m2)</label><input type="number" id="nf_imc" step="0.1" min="10" max="70" placeholder="ex. 26.4"></div>' +
+    '<div class="f full"><label class="lbl">Autres comorbidités</label><input type="text" id="nf_autres_atcd" placeholder="ex. HTA, cardiopathie, cirrhose, IRC..."></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-r">🔪</div><h3>Antécédents chirurgicaux</h3></div>' +
+    '<div class="g g-auto">' +
+    '<div class="f"><label class="lbl">ATCD chirurgicaux abdominaux / inguinaux</label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_atcd_chir_yn" value="Non" checked onchange="togAtcdChir(this)">Non</label><label class="to warn"><input type="radio" name="nf_atcd_chir_yn" value="Oui" onchange="togAtcdChir(this)">Oui</label></div></div>' +
+    '<div class="f" id="d-atcd-chir" style="display:none"><label class="lbl">Préciser (nature + date)</label><input type="text" id="nf_atcd_chir_detail" placeholder="ex. cure hernie droite 2018, appendicectomie 2010…"></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-b">🔬</div><h3>Bilan biologique préopératoire</h3></div>' +
+    '<div class="sep">Hemogramme</div>' +
+    '<div class="g g3">' +
+    '<div class="f"><label class="lbl">Hemoglobine Hb (g/dL)</label><input type="number" id="nf_hb_preop" step="0.1" placeholder="ex. 13.2"></div>' +
+    '<div class="f"><label class="lbl">GB (x10³/mm³)</label><input type="number" id="nf_gb_preop" step="0.1" placeholder="ex. 7.5"></div>' +
+    '<div class="f"><label class="lbl">Plaquettes (x10³/mm³)</label><input type="number" id="nf_plaquettes_preop" placeholder="ex. 220"></div>' +
+    '<div class="f"><label class="lbl">Groupe sanguin / Rhésus</label><input type="text" id="nf_gs_rh" placeholder="ex. A+ / O- / B+"></div>' +
+    '</div>' +
+    '<div class="sep">Biochimie</div>' +
+    '<div class="g g3">' +
+    '<div class="f"><label class="lbl">Créatinine (μmol/L)</label><input type="number" id="nf_creatinine" step="0.1" placeholder="ex. 88"></div>' +
+    '<div class="f"><label class="lbl">Glycémie (mmol/L)</label><input type="number" id="nf_glycemie" step="0.1" placeholder="ex. 5.8"></div>' +
+    '<div class="f"><label class="lbl">HbA1c (%) si diabète</label><input type="number" id="nf_hba1c" step="0.1" placeholder="ex. 7.2"></div>' +
+    '<div class="f"><label class="lbl">Albumine (g/L)</label><input type="number" id="nf_albumine" step="0.1" placeholder="ex. 38"></div>' +
+    '<div class="f"><label class="lbl">TP / INR</label><input type="text" id="nf_tp_inr" placeholder="ex. 90% / 1.1"></div>' +
+    '</div>' +
+    '<div class="f full" style="margin-top:8px"><label class="lbl">Autres paramètres biologiques</label><input type="text" id="nf_autres_bio" placeholder="ex. BNP, TSH, bilan hépatique, ionogramme…"></div>' +
+    '</div>';
+
+  if (n === 3) return '' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-g">🔬</div><h3>Caractéristiques de la hernie</h3></div>' +
+    '<div class="g g-auto">' +
+    '<div class="f full"><label class="lbl">Type de hernie</label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_type_hernie" value="Directe (médiale)">Directe (médiale)</label><label class="to"><input type="radio" name="nf_type_hernie" value="Indirecte (latérale)">Indirecte (latérale)</label><label class="to warn"><input type="radio" name="nf_type_hernie" value="Mixte (en pantalon)">Mixte (en pantalon)</label><label class="to"><input type="radio" name="nf_type_hernie" value="Femorale">Femorale</label></div>' +
+    '</div>' +
+    '<div class="f"><label class="lbl">Classification EHS <button type="button" class="aid-btn" onclick="showAid(\'ehs\')">🗺️ Guide</button></label><input type="text" id="nf_classification_ehs" placeholder="ex. L2 / M1 / F1 / L2r"></div>' +
+    '<div class="f"><label class="lbl">Latéralité</label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_lateralite" value="Droite">Droite</label><label class="to"><input type="radio" name="nf_lateralite" value="Gauche">Gauche</label><label class="to warn"><input type="radio" name="nf_lateralite" value="Bilatérale">Bilatérale</label></div></div>' +
+    '<div class="f"><label class="lbl">Primaire / Récidive</label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_primaire_recidive" value="Primaire">Primaire</label><label class="to dng"><input type="radio" name="nf_primaire_recidive" value="Recidive">Recidive</label></div></div>' +
+    '<div class="f"><label class="lbl">Réductibilité</label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_reductible" value="Réductible">Réductible</label><label class="to warn"><input type="radio" name="nf_reductible" value="Irréductible">Irréductible</label><label class="to dng"><input type="radio" name="nf_reductible" value="Etranglee">Étranglée (urgence)</label></div></div>' +
+    '<div class="f"><label class="lbl">Ancienneté (mois)</label><input type="number" id="nf_anciennete_mois" min="0" placeholder="ex. 18"></div>' +
+    '<div class="f full"><label class="lbl">Douleur préopératoire (EVA)</label>' + vasSlider('nf_douleur_preop_vas') + '</div>' +
+    '</div></div>';
+
+  if (n === 4) return '' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-r">🔪</div><h3>Données per-opératoires</h3></div>' +
+    '<div class="sep">Technique chirurgicale <span class="r">*</span></div>' +
+    '<div class="tg" style="margin-bottom:13px">' +
+    '<label class="to"><input type="radio" name="nf_technique" value="Lichtenstein" onchange="togFermeture(this)">Lichtenstein</label>' +
+    '<label class="to"><input type="radio" name="nf_technique" value="TAPP" onchange="togFermeture(this)">TAPP</label>' +
+    '<label class="to"><input type="radio" name="nf_technique" value="TEP" onchange="togFermeture(this)">TEP</label>' +
+    '<label class="to"><input type="radio" name="nf_technique" value="Shouldice" onchange="togFermeture(this)">Shouldice</label>' +
+    '<label class="to warn"><input type="radio" name="nf_technique" value="Autre" onchange="togFermeture(this)">Autre</label>' +
+    '</div>' +
+    '<div id="d-fermeture" style="display:none;margin-bottom:13px">' +
+    '<div class="sep" style="color:var(--teal)">Fermeture du péritoine (TAPP/TEP)</div>' +
+    '<div class="tg">' +
+    '<label class="to"><input type="radio" name="nf_fermeture_peritoine" value="Tacker résorbable">Tacker résorbable</label>' +
+    '<label class="to"><input type="radio" name="nf_fermeture_peritoine" value="Tacker non résorbable">Tacker non résorbable</label>' +
+    '<label class="to"><input type="radio" name="nf_fermeture_peritoine" value="Surjet fil résorbable">Surjet fil résorbable</label>' +
+    '</div></div>' +
+    '<div class="sep">Anesthesie</div>' +
+    '<div class="tg" style="margin-bottom:13px">' +
+    '<label class="to"><input type="radio" name="nf_anesthesie" value="Generale">Generale</label>' +
+    '<label class="to"><input type="radio" name="nf_anesthesie" value="Rachianesthésie">Rachianesthésie</label>' +
+    '<label class="to"><input type="radio" name="nf_anesthesie" value="Locale">Locale</label>' +
+    '<label class="to"><input type="radio" name="nf_anesthesie" value="Locale + sedation">Locale + sedation</label>' +
+    '</div>' +
+    '<div class="g g3">' +
+    '<div class="f"><label class="lbl">Durée (min)</label><input type="number" id="nf_duree_intervention" min="0" placeholder="ex. 65"></div>' +
+    '<div class="f"><label class="lbl">Taille mesh</label><input type="text" id="nf_taille_mesh" placeholder="ex. 10x15 cm"></div>' +
+    '<div class="f"><label class="lbl">Poids du mesh <button type="button" class="aid-btn" onclick="showAid(\'mesh\')">📋</button></label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_poids_mesh" value="Leger">Leger</label><label class="to"><input type="radio" name="nf_poids_mesh" value="Standard">Standard</label><label class="to"><input type="radio" name="nf_poids_mesh" value="Lourd">Lourd</label></div></div>' +
+    '<div class="f"><label class="lbl">Fixation du mesh <button type="button" class="aid-btn" onclick="showAid(\'fixation\')">📋</button></label>' +
+    '<div class="tg"><label class="to"><input type="radio" name="nf_fixation_mesh" value="Tacker résorbable">Tacker res.</label><label class="to"><input type="radio" name="nf_fixation_mesh" value="Tacker non résorbable">Tacker NR</label><label class="to"><input type="radio" name="nf_fixation_mesh" value="Colle">Colle</label><label class="to"><input type="radio" name="nf_fixation_mesh" value="Sans fixation">Sans fixation</label></div></div>' +
+    '<div class="f"><label class="lbl">Taille du collet (cm)</label><input type="number" id="nf_taille_collet" step="0.5" min="0" placeholder="ex. 2"></div>' +
+    '<div class="f"><label class="lbl">Taille du sac (cm)</label><input type="number" id="nf_taille_sac" step="0.5" min="0" placeholder="ex. 4"></div>' +
+    '<div class="f"><label class="lbl">Hypotension peropératoire</label><div class="tg"><label class="to"><input type="radio" name="nf_hypotension_perop" value="Non">Non</label><label class="to dng"><input type="radio" name="nf_hypotension_perop" value="Oui">Oui</label></div></div>' +
+    '<div class="f"><label class="lbl">Conversion</label><div class="tg"><label class="to"><input type="radio" name="nf_conversion" value="Non">Non</label><label class="to dng"><input type="radio" name="nf_conversion" value="Oui">Oui</label></div></div>' +
+    '<div class="f full"><label class="lbl">Accidents per-opératoires</label><input type="text" id="nf_accidents_perop" placeholder="ex. plaie vasculaire, viscérale…"></div>' +
+    '<div class="f full"><label class="lbl">Gestes associés</label><input type="text" id="nf_gestes_associes" placeholder="ex. orchidopexie, drainage…"></div>' +
+    '</div></div>';
+
+  if (n === 5) return '' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-c">🛏</div><h3>Suites post-opératoires immédiates</h3></div>' +
+    '<div class="g g3">' +
+    '<div class="f full"><label class="lbl">EVA douleur J1 (0-10)</label>' + vasSlider('nf_vas_j1') + '</div>' +
+    '<div class="f"><label class="lbl">Durée d\'hospitalisation (jours)</label><input type="number" id="nf_duree_hospit" min="0" placeholder="ex. 2"></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-r">⚠️</div><h3>Complications post-opératoires</h3><button type="button" class="aid-btn" onclick="showAid(\'clavien\')" style="margin-left:8px">📋 Clavien-Dindo</button></div>' +
+    '<div class="sep">Y a-t-il des complications ?</div>' +
+    '<div class="tg" style="margin-bottom:14px">' +
+    '<label class="to"><input type="radio" name="nf_complications_yn" value="Non" checked onchange="togComplications(this)">✓ Aucune complication</label>' +
+    '<label class="to dng"><input type="radio" name="nf_complications_yn" value="Oui" onchange="togComplications(this)">⚠️ Oui</label>' +
+    '</div>' +
+    '<div id="d-compls" style="display:none">' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">' +
+    '<div><div class="sep" style="color:var(--primary)">Complications non spécifiques (médicales)</div>' +
+    '<div class="chk-list">' +
+    '<label class="chk-item"><input type="checkbox" name="nf_compl_ns" value="TVP">Thrombose veineuse profonde (TVP)</label>' +
+    '<label class="chk-item"><input type="checkbox" name="nf_compl_ns" value="Embolie pulmonaire">Embolie pulmonaire</label>' +
+    '<label class="chk-item"><input type="checkbox" name="nf_compl_ns" value="Pneumopathie">Pneumopathie</label>' +
+    '<label class="chk-item"><input type="checkbox" name="nf_compl_ns" value="Infection urinaire">Infection urinaire</label>' +
+    '<label class="chk-item"><input type="checkbox" name="nf_compl_ns" value="Autre complication médicale">Autre complication médicale</label>' +
+    '</div></div>' +
+    '<div><div class="sep" style="color:var(--red)">Complications spécifiques (chirurgicales)</div>' +
+    '<div class="chk-list">' +
+    '<label class="chk-item dng"><input type="checkbox" name="nf_compl_sp" value="Serome">Serome</label>' +
+    '<label class="chk-item dng"><input type="checkbox" name="nf_compl_sp" value="Hematome">Hematome</label>' +
+    '<label class="chk-item dng"><input type="checkbox" name="nf_compl_sp" value="Retention urinaire">Rétention urinaire aiguë</label>' +
+    '<label class="chk-item dng"><input type="checkbox" name="nf_compl_sp" value="Infection de paroi">Infection de paroi</label>' +
+    '<label class="chk-item dng"><input type="checkbox" name="nf_compl_sp" value="Orchite ischémique">Orchite ischémique</label>' +
+    '<label class="chk-item dng"><input type="checkbox" name="nf_compl_sp" value="Atrophie testiculaire">Atrophie testiculaire</label>' +
+    '<label class="chk-item dng"><input type="checkbox" name="nf_compl_sp" value="Autre complication chirurgicale">Autre chirurgicale</label>' +
+    '</div></div></div>' +
+    '<div class="g g-auto">' +
+    '<div class="f"><label class="lbl">Grade de Clavien-Dindo <button type="button" class="aid-btn" onclick="showAid(\'clavien\')">📋</button></label>' +
+    '<select id="nf_compl_clavien"><option value="">— Selectionner —</option><option value="I">Grade I</option><option value="II">Grade II</option><option value="IIIa">Grade IIIa</option><option value="IIIb">Grade IIIb</option><option value="IVa">Grade IVa</option><option value="IVb">Grade IVb</option><option value="V">Grade V — Deces</option></select></div>' +
+    '<div class="f full"><label class="lbl">Détails et conduite tenue</label><input type="text" id="nf_compl_detail" placeholder="ex. sérome évacué à J8, reprise chirurgicale pour hématome…"></div>' +
+    '</div></div></div>' +
+    '<div class="card"><div class="sh"><div class="sh-icon bg-p">📊</div><h3>EuraHS-QoL Préopératoire</h3><span class="badge">Baseline</span><button type="button" class="aid-btn" onclick="showAid(\'eurahs\')" style="margin-left:8px">📋 Guide</button></div>' +
+    '<p style="font-size:12px;color:var(--text-m);margin-bottom:12px"><strong>0 = aucune gêne  ·  10 = gêne maximale</strong></p>' +
+    '<div class="sep">Douleur au site de la hernie</div>' +
+    euraHSItem('nf_eurahs_repos', 'Au repos (allongé)') +
+    euraHSItem('nf_eurahs_activite', "Lors d'activités (marche, vélo)") +
+    euraHSItem('nf_eurahs_max', 'Pire douleur de la dernière semaine') +
+    '<div class="sep" style="margin-top:12px">Restriction des activités</div>' +
+    euraHSItem('nf_eurahs_int', "À l'intérieur de la maison") +
+    euraHSItem('nf_eurahs_ext', "À l'extérieur (marche, conduite)") +
+    euraHSItem('nf_eurahs_sport', 'Pendant le sport / loisirs') +
+    euraHSItem('nf_eurahs_lourds', 'Lors de travaux lourds / port de charges') +
+    '<div class="sep" style="margin-top:12px">Gêne esthétique</div>' +
+    euraHSItem('nf_eurahs_esthet_abdo', "Forme de l'abdomen") +
+    euraHSItem('nf_eurahs_esthet_hernie', 'Site de la hernie / cicatrices') +
+    '<div class="eurahs-total"><span>Score EuraHS préop — TOTAL</span><span class="et-val" id="eurahs-total-val">0 / 90</span></div>' +
+    '</div>';
+
+  return '<p>Étape inconnue</p>';
+}
+
+// ════════════════════════════════════════════════════
+//  HTML DES FORMULAIRES DE SUIVI
+// ════════════════════════════════════════════════════
+function followupFormHtml(phase, p) {
+  var predate = p[phase + '_date'] || '';
+  var prevas  = p[phase + '_VAS']  || 0;
+  var presat  = p[phase + '_satisfaction'] || 5;
+
+  var base = '<div class="card"><div class="sh"><div class="sh-icon bg-b">📅</div><h3>Consultation ' + phase + '</h3></div>' +
+    '<div class="g g-auto">' +
+    '<div class="f"><label class="lbl">Date de consultation</label><input type="date" id="fu_date" value="' + predate + '"></div>' +
+    '<div class="f"><label class="lbl">EVA douleur (0-10)</label>' + vasSlider('fu_vas', 10, prevas) + '</div>' +
+    '<div class="f"><label class="lbl">Satisfaction globale (0-10)</label>' + vasSlider('fu_satisfaction', 10, presat) + '</div>' +
+    '</div></div>';
+
+  var extra = '';
+  if (phase === 'M1') {
+    extra = '<div class="card"><div class="sh"><div class="sh-icon bg-a">🩺</div><h3>Suites operatoires - 1 mois</h3></div>' +
+      '<div class="g g3">' +
+      '<div class="f"><label class="lbl">Serome</label><div class="tg"><label class="to"><input type="radio" name="fu_serome" value="Non" checked>Non</label><label class="to warn"><input type="radio" name="fu_serome" value="Oui">Oui</label></div></div>' +
+      '<div class="f"><label class="lbl">Hematome</label><div class="tg"><label class="to"><input type="radio" name="fu_hematome" value="Non" checked>Non</label><label class="to dng"><input type="radio" name="fu_hematome" value="Oui">Oui</label></div></div>' +
+      '<div class="f"><label class="lbl">Reprise travail (jours post-op)</label><input type="number" id="fu_reprise_travail" min="0" placeholder="ex. 21"></div>' +
+      '<div class="f"><label class="lbl">Reprise activite physique (jours)</label><input type="number" id="fu_reprise_activite" min="0" placeholder="ex. 30"></div>' +
+      '<div class="f full"><label class="lbl">Complications</label><input type="text" id="fu_complications" placeholder="ex. infection plaie, douleur inguinale..."></div>' +
+      '</div></div>' +
+      '<div class="card"><div class="sh"><div class="sh-icon bg-p">📊</div><h3>EuraHS postoperatoire - M1</h3></div>' +
+      '<div class="eurahs-item"><span class="eurahs-label">Douleur au repos</span><input type="range" style="flex:2;accent-color:var(--primary-m)" id="fu_eurahs_repos" min="0" max="10" value="0" step="1" oninput="document.getElementById(\'fu_er_v\').textContent=this.value"><span class="eurahs-score" id="fu_er_v">0</span></div>' +
+      '<div class="eurahs-item"><span class="eurahs-label">Douleur a l\'activite</span><input type="range" style="flex:2;accent-color:var(--primary-m)" id="fu_eurahs_activite" min="0" max="10" value="0" step="1" oninput="document.getElementById(\'fu_ea_v\').textContent=this.value"><span class="eurahs-score" id="fu_ea_v">0</span></div>' +
+      '<div class="eurahs-item"><span class="eurahs-label">Gêne esthétique cicatrice</span><input type="range" style="flex:2;accent-color:var(--primary-m)" id="fu_eurahs_esthet" min="0" max="10" value="0" step="1" oninput="document.getElementById(\'fu_ee_v\').textContent=this.value"><span class="eurahs-score" id="fu_ee_v">0</span></div>' +
+      '</div>';
+  }
+  if (phase === 'M3') {
+    extra =
+      // ── CARD 1 — Clinique ──────────────────────────────────────
+      '<div class="card">' +
+      '<div class="sh"><div class="sh-icon bg-a">🩺</div><h3>Contrôle 3 mois — Evaluation clinique</h3></div>' +
+      '<div class="g g-auto">' +
+      '<div class="f"><label class="lbl">Douleur chronique (&gt; 3 mois)</label>' +
+      '<div class="tg"><label class="to"><input type="radio" name="fu_douleur_chronique" value="Non" checked>Non</label>' +
+      '<label class="to dng"><input type="radio" name="fu_douleur_chronique" value="Oui">Oui — douleur persistante</label></div></div>' +
+      '<div class="f"><label class="lbl">Type de douleur (si oui)</label>' +
+      '<input type="text" id="fu_type_douleur" placeholder="ex. nociceptive, neuropathique (brulure/fourmillement), mixte"></div>' +
+      '<div class="f"><label class="lbl">Recidive herniaire</label>' +
+      '<div class="tg"><label class="to"><input type="radio" name="fu_recidive" value="Non" checked>Non</label>' +
+      '<label class="to dng"><input type="radio" name="fu_recidive" value="Oui">Oui</label></div></div>' +
+      '</div></div>' +
+
+      // ── CARD 2 — CCS guide + saisie ────────────────────────────
+      '<div class="card">' +
+      '<div class="sh"><div class="sh-icon bg-p">🕸️</div><h3>Score CCS — Carolinas Comfort Scale</h3>' +
+      '<span class="badge" style="background:var(--purple-l);color:var(--purple)">Score / 15</span></div>' +
+
+      // Fiche rappel CCS
+      '<div style="background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px;margin-bottom:14px;font-size:12px">' +
+      '<div style="font-family:Sora,sans-serif;font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px">📋 FICHE RAPPEL — Methode de cotation CCS</div>' +
+      '<div style="color:#4c1d95;margin-bottom:8px">Le CCS evalue la <strong>gene liee au mesh</strong> sur 3 dimensions, chacune cotee de 0 a 5 :</div>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
+      '<tr style="background:#7c3aed;color:#fff">' +
+      '<th style="padding:6px 8px;text-align:left">Score</th>' +
+      '<th style="padding:6px 8px">Dim. 1 — Inconfort<br><span style="font-weight:400;opacity:.8">Sensation corps etranger</span></th>' +
+      '<th style="padding:6px 8px">Dim. 2 — Douleur<br><span style="font-weight:400;opacity:.8">A la mobilisation</span></th>' +
+      '<th style="padding:6px 8px">Dim. 3 — Raideur<br><span style="font-weight:400;opacity:.8">Amplitude de mouvement</span></th>' +
+      '</tr>' +
+      '<tr style="background:#ede9fe"><td style="padding:5px 8px;font-weight:700;color:#15803d">0</td><td style="padding:5px 8px">Aucune sensation</td><td style="padding:5px 8px">Aucune douleur</td><td style="padding:5px 8px">Aucune limitation</td></tr>' +
+      '<tr><td style="padding:5px 8px;font-weight:700;color:#059669">1</td><td style="padding:5px 8px">Legere si recherchee</td><td style="padding:5px 8px">Legere a l\'effort intense</td><td style="padding:5px 8px">Legere raideur matinale</td></tr>' +
+      '<tr style="background:#ede9fe"><td style="padding:5px 8px;font-weight:700;color:#d97706">2</td><td style="padding:5px 8px">Moderee, spontanee</td><td style="padding:5px 8px">Moderee a l\'activite normale</td><td style="padding:5px 8px">Raideur notable, s\'ameliore</td></tr>' +
+      '<tr><td style="padding:5px 8px;font-weight:700;color:#c2410c">3</td><td style="padding:5px 8px">Souvent conscient</td><td style="padding:5px 8px">Presente au mouvement simple</td><td style="padding:5px 8px">Limite les gestes habituels</td></tr>' +
+      '<tr style="background:#ede9fe"><td style="padding:5px 8px;font-weight:700;color:#dc2626">4</td><td style="padding:5px 8px">Gene importante quotidienne</td><td style="padding:5px 8px">Douleur frequente</td><td style="padding:5px 8px">Limitation importante</td></tr>' +
+      '<tr><td style="padding:5px 8px;font-weight:700;color:#fff;background:#7c3aed">5</td><td style="padding:5px 8px;background:#7c3aed;color:#fff">Invalidante</td><td style="padding:5px 8px;background:#7c3aed;color:#fff">Constante et invalidante</td><td style="padding:5px 8px;background:#7c3aed;color:#fff">Quasi-immobilite</td></tr>' +
+      '</table>' +
+      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:100px;background:#dcfce7;border-radius:8px;padding:7px 10px;font-size:11px;text-align:center"><strong style="color:#15803d">0–3</strong><br><span style="color:#166534">Excellent resultat</span></div>' +
+      '<div style="flex:1;min-width:100px;background:#fef9c3;border-radius:8px;padding:7px 10px;font-size:11px;text-align:center"><strong style="color:#92400e">4–7</strong><br><span style="color:#78350f">Resultat acceptable</span></div>' +
+      '<div style="flex:1;min-width:100px;background:#fee2e2;border-radius:8px;padding:7px 10px;font-size:11px;text-align:center"><strong style="color:#991b1b">8–15</strong><br><span style="color:#7f1d1d">Gene significative mesh</span></div>' +
+      '</div>' +
+      '<div style="margin-top:8px;font-size:11px;color:#5b21b6;font-style:italic">⚠️ Score total = Dim.1 + Dim.2 + Dim.3 (calcule automatiquement ci-dessous)</div>' +
+      '</div>' +
+
+      // Sliders CCS
+      '<div style="margin-bottom:8px;font-size:12px;font-weight:700;color:var(--purple)">Cotation — repondez selon l\'etat du patient lors de cette consultation :</div>' +
+      '<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;margin-bottom:6px">Dimension 1 — Inconfort / Sensation de corps etranger (mesh)</div>' +
+      '<div class="eurahs-item" style="background:#fff">' +
+      '<span class="eurahs-label">Score (0 = aucune sensation · 5 = invalidant)</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--purple)" id="fu_ccs_inconfort" min="0" max="5" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcCCS()">' +
+      '<span class="eurahs-score" style="color:var(--purple)">0</span>' +
+      '</div></div>' +
+      '<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;margin-bottom:6px">Dimension 2 — Douleur lors des mouvements / efforts</div>' +
+      '<div class="eurahs-item" style="background:#fff">' +
+      '<span class="eurahs-label">Score (0 = pas de douleur · 5 = constante et invalidante)</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--purple)" id="fu_ccs_douleur" min="0" max="5" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcCCS()">' +
+      '<span class="eurahs-score" style="color:var(--purple)">0</span>' +
+      '</div></div>' +
+      '<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;margin-bottom:6px">Dimension 3 — Raideur / Limitation de l\'amplitude de mouvement</div>' +
+      '<div class="eurahs-item" style="background:#fff">' +
+      '<span class="eurahs-label">Score (0 = aucune limitation · 5 = quasi-immobilite)</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--purple)" id="fu_ccs_mouvement" min="0" max="5" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcCCS()">' +
+      '<span class="eurahs-score" style="color:var(--purple)">0</span>' +
+      '</div></div>' +
+
+      // Score CCS total live
+      '<div id="ccs-total-bar" style="background:var(--purple);color:#fff;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+      '<span style="font-size:13px;font-weight:600">Score CCS TOTAL = Dim.1 + Dim.2 + Dim.3</span>' +
+      '<span style="font-family:Sora,sans-serif;font-size:28px;font-weight:800" id="ccs-total-val">0</span>' +
+      '</div>' +
+      '<div id="ccs-interp" style="text-align:right;font-size:12px;color:var(--green);font-weight:600;margin-bottom:6px">Excellent resultat</div>' +
+      '</div>' +
+
+      // ── CARD 3 — EuraHS guide + saisie ────────────────────────
+      '<div class="card">' +
+      '<div class="sh"><div class="sh-icon bg-b">📊</div><h3>Score EuraHS-QoL — Contrôle 3 mois</h3>' +
+      '<span class="badge">Score / 90</span></div>' +
+
+      // Fiche rappel EuraHS
+      '<div style="background:#eff6ff;border:1.5px solid #93c5fd;border-radius:12px;padding:14px;margin-bottom:14px;font-size:12px">' +
+      '<div style="font-family:Sora,sans-serif;font-size:12px;font-weight:700;color:var(--primary);margin-bottom:10px">📋 FICHE RAPPEL — Methode de cotation EuraHS-QoL</div>' +
+      '<div style="color:#1e40af;margin-bottom:8px">Le EuraHS evalue la <strong>qualite de vie liee a la hernie</strong> sur 3 domaines, chaque item de <strong>0 (aucune gene) a 10 (gene maximale)</strong>. Score total = somme des 9 items (max 90).</div>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
+      '<tr style="background:var(--primary);color:#fff">' +
+      '<th style="padding:6px 8px;text-align:left;width:30%">Domaine</th>' +
+      '<th style="padding:6px 8px;text-align:left">Item</th>' +
+      '<th style="padding:6px 8px;text-align:center;width:15%">0</th>' +
+      '<th style="padding:6px 8px;text-align:center;width:15%">10</th>' +
+      '</tr>' +
+      '<tr style="background:#dbeafe"><td rowspan="3" style="padding:5px 8px;font-weight:700;color:var(--primary);font-size:11px;vertical-align:middle">DOULEUR<br>au site</td>' +
+      '<td style="padding:5px 8px">Au repos (allongé)</td><td style="padding:5px 8px;text-align:center;color:#15803d">Aucune</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Insupportable</td></tr>' +
+      '<tr style="background:#dbeafe"><td style="padding:5px 8px">A l\'activite (marche, velo)</td><td style="padding:5px 8px;text-align:center;color:#15803d">Aucune</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Insupportable</td></tr>' +
+      '<tr style="background:#dbeafe"><td style="padding:5px 8px">Pire douleur / semaine</td><td style="padding:5px 8px;text-align:center;color:#15803d">Aucune</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Insupportable</td></tr>' +
+      '<tr><td rowspan="4" style="padding:5px 8px;font-weight:700;color:var(--green);font-size:11px;vertical-align:middle">ACTIVITES<br>restreintes</td>' +
+      '<td style="padding:5px 8px">A l\'interieur de la maison</td><td style="padding:5px 8px;text-align:center;color:#15803d">Aucune gene</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Gene max</td></tr>' +
+      '<tr><td style="padding:5px 8px">A l\'exterieur (marche, conduite)</td><td style="padding:5px 8px;text-align:center;color:#15803d">Aucune gene</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Gene max</td></tr>' +
+      '<tr><td style="padding:5px 8px">Sport / activite physique</td><td style="padding:5px 8px;text-align:center;color:#15803d">Aucune gene</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Gene max</td></tr>' +
+      '<tr><td style="padding:5px 8px">Travaux lourds</td><td style="padding:5px 8px;text-align:center;color:#15803d">Aucune gene</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Gene max</td></tr>' +
+      '<tr style="background:#ede9fe"><td rowspan="2" style="padding:5px 8px;font-weight:700;color:var(--purple);font-size:11px;vertical-align:middle">ESTHETIQUE<br>abdomen</td>' +
+      '<td style="padding:5px 8px">Forme de l\'abdomen</td><td style="padding:5px 8px;text-align:center;color:#15803d">Tres beau</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Tres laid</td></tr>' +
+      '<tr style="background:#ede9fe"><td style="padding:5px 8px">Site de la hernie / cicatrices / cicatrices</td><td style="padding:5px 8px;text-align:center;color:#15803d">Tres beau</td><td style="padding:5px 8px;text-align:center;color:#dc2626">Tres laid</td></tr>' +
+      '</table>' +
+      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:100px;background:#dcfce7;border-radius:8px;padding:7px 10px;font-size:11px;text-align:center"><strong style="color:#15803d">0–15</strong><br><span style="color:#166534">QoL excellente</span></div>' +
+      '<div style="flex:1;min-width:100px;background:#fef9c3;border-radius:8px;padding:7px 10px;font-size:11px;text-align:center"><strong style="color:#92400e">16–45</strong><br><span style="color:#78350f">QoL moderement alteree</span></div>' +
+      '<div style="flex:1;min-width:100px;background:#fee2e2;border-radius:8px;padding:7px 10px;font-size:11px;text-align:center"><strong style="color:#991b1b">&gt; 45</strong><br><span style="color:#7f1d1d">QoL tres alteree</span></div>' +
+      '</div>' +
+      '<div style="margin-top:8px;font-size:11px;color:#1e40af;font-style:italic">⚠️ Score total = somme des 9 items. Comparer avec le score preoperatoire pour evaluer le benefice de la chirurgie.</div>' +
+      '</div>' +
+
+      // Sliders EuraHS
+      '<div style="margin-bottom:8px;font-size:12px;font-weight:700;color:var(--primary)">Cotation — demandez au patient de noter sa gene actuelle :</div>' +
+      '<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:6px">Domaine 1 — Douleur au site de la hernie / cicatrice</div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">Au repos (allonge, au calme)</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--primary-m)" id="fu_eurahs_repos" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score">0</span></div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">A l\'activite (marche, montee escaliers)</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--primary-m)" id="fu_eurahs_activite" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score">0</span></div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">Pire douleur ressentie cette semaine</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--primary-m)" id="fu_eurahs_max" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score">0</span></div>' +
+      '</div>' +
+      '<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px">Domaine 2 — Restriction des activités</div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">A l\'interieur de la maison</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--green)" id="fu_eurahs_int" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score" style="color:var(--green)">0</span></div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">A l\'exterieur (marche, conduite, courses)</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--green)" id="fu_eurahs_ext" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score" style="color:var(--green)">0</span></div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">Pendant le sport / loisirs / activite physique</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--green)" id="fu_eurahs_sport" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score" style="color:var(--green)">0</span></div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">Lors de travaux lourds / port de charges / port de charges</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--green)" id="fu_eurahs_lourds" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score" style="color:var(--green)">0</span></div>' +
+      '</div>' +
+      '<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;margin-bottom:6px">Domaine 3 — Gêne esthétique</div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">Forme generale de l\'abdomen</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--purple)" id="fu_eurahs_esthet_abdo" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score" style="color:var(--purple)">0</span></div>' +
+      '<div class="eurahs-item" style="background:#fff"><span class="eurahs-label">Site de la hernie / cicatrices et cicatrice(s)</span>' +
+      '<input type="range" style="flex:2;accent-color:var(--purple)" id="fu_eurahs_esthet_hernie" min="0" max="10" value="0" step="1" oninput="this.nextElementSibling.textContent=this.value;calcEuraHSM3()">' +
+      '<span class="eurahs-score" style="color:var(--purple)">0</span></div>' +
+      '</div>' +
+
+      // Score EuraHS total live
+      '<div style="background:var(--primary);color:#fff;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+      '<div><div style="font-size:13px;font-weight:600">Score EuraHS-QoL TOTAL</div>' +
+      '<div style="font-size:11px;opacity:.7;margin-top:2px">Douleur + Activites + Esthetique (9 items)</div></div>' +
+      '<span style="font-family:Sora,sans-serif;font-size:28px;font-weight:800" id="eurahs-m3-total">0</span>' +
+      '</div>' +
+      '<div id="eurahs-m3-interp" style="text-align:right;font-size:12px;color:var(--green);font-weight:600;margin-bottom:6px">QoL excellente</div>' +
+      '<div style="font-size:11px;color:var(--text-m);margin-top:4px;padding:8px 12px;background:var(--bg);border-radius:8px">' +
+      '💡 Score preoperatoire de ce patient : a comparer pour evaluer le benefice chirurgical</div>' +
+      '</div>' +
+
+      // ── CARD 4 — Commentaires ──────────────────────────────────
+      '<div class="card">' +
+      '<div class="sh"><div class="sh-icon bg-g">📝</div><h3>Commentaires libres</h3></div>' +
+      '<div class="f"><textarea id="fu_commentaires" style="height:90px" placeholder="Observations cliniques, elements contextuels, satisfaction patient, decisions therapeutiques..."></textarea></div>' +
+      '</div>';
+  }
+  if (phase === 'M6' || phase === 'M12' || phase === 'LT') {
+    extra = '<div class="card"><div class="sh"><div class="sh-icon bg-a">🩺</div><h3>Contrôle ' + phase + '</h3></div>' +
+      '<div class="g g-auto">' +
+      '<div class="f"><label class="lbl">Douleur chronique</label><div class="tg"><label class="to"><input type="radio" name="fu_douleur_chronique" value="Non" checked>Non</label><label class="to dng"><input type="radio" name="fu_douleur_chronique" value="Oui">Oui</label></div></div>' +
+      '<div class="f"><label class="lbl">Recidive herniaire</label><div class="tg"><label class="to"><input type="radio" name="fu_recidive" value="Non" checked>Non</label><label class="to dng"><input type="radio" name="fu_recidive" value="Oui">Oui</label></div></div>' +
+      '<div class="f"><label class="lbl">Delai recidive (mois)</label><input type="number" id="fu_delai_recidive" min="0" placeholder="si recidive"></div>' +
+      '<div class="f"><label class="lbl">Score EuraHS global (0-90)</label><input type="number" id="fu_eurahs_global" min="0" max="90" placeholder="ex. 15"></div>' +
+      (phase === 'LT' ? '<div class="f"><label class="lbl">Recul total (mois)</label><input type="number" id="fu_suivi_mois" min="0" placeholder="ex. 24"></div>' : '') +
+      '</div>' +
+      (phase === 'LT' ? '<div class="f" style="margin-top:10px"><label class="lbl">Commentaires</label><textarea id="fu_commentaires" placeholder="Particularites du suivi long terme..."></textarea></div>' : '') +
+      '</div>';
+  }
+  return base + extra;
+}
+// ════════════════════════════════════════════════════
+//  CALCULS LIVE — CONTROLE M3
+// ════════════════════════════════════════════════════
+function calcCCS() {
+  var a = parseInt(document.getElementById('fu_ccs_inconfort') ? document.getElementById('fu_ccs_inconfort').value : 0) || 0;
+  var b = parseInt(document.getElementById('fu_ccs_douleur')   ? document.getElementById('fu_ccs_douleur').value   : 0) || 0;
+  var c = parseInt(document.getElementById('fu_ccs_mouvement') ? document.getElementById('fu_ccs_mouvement').value : 0) || 0;
+  var t = a + b + c;
+  var tv = document.getElementById('ccs-total-val');
+  if (tv) tv.textContent = t;
+  var bar = document.getElementById('ccs-total-bar');
+  if (bar) bar.style.background = t <= 3 ? '#065f46' : (t <= 7 ? '#92400e' : '#991b1b');
+  var ci = document.getElementById('ccs-interp');
+  if (ci) {
+    ci.textContent = t <= 3 ? '✅ Excellent resultat' : (t <= 7 ? '⚠️ Resultat acceptable' : '🔴 Gene significative liee au mesh');
+    ci.style.color  = t <= 3 ? 'var(--green)' : (t <= 7 ? 'var(--amber)' : 'var(--red)');
+  }
+}
+
+function calcEuraHSM3() {
+  var ids = ['fu_eurahs_repos','fu_eurahs_activite','fu_eurahs_max',
+             'fu_eurahs_int','fu_eurahs_ext','fu_eurahs_sport',
+             'fu_eurahs_lourds','fu_eurahs_esthet_abdo','fu_eurahs_esthet_hernie'];
+  var t = 0;
+  for (var i = 0; i < ids.length; i++) {
+    var el = document.getElementById(ids[i]);
+    if (el) t += parseInt(el.value) || 0;
+  }
+  var tv = document.getElementById('eurahs-m3-total');
+  if (tv) tv.textContent = t;
+  var ei = document.getElementById('eurahs-m3-interp');
+  if (ei) {
+    ei.textContent = t <= 15 ? '✅ QoL excellente' : (t <= 45 ? '⚠️ QoL moderement alteree' : '🔴 QoL tres alteree');
+    ei.style.color  = t <= 15 ? 'var(--green)' : (t <= 45 ? 'var(--amber)' : 'var(--red)');
+  }
+}
+</script>
 </body>
 </html>
